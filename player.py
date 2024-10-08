@@ -14,6 +14,7 @@ class Player:
         self.name = None
         self.birth_date = None
         self.id = id
+        self.predict_points = None
 
     def set_name(self, first_name, last_name):
         self.name = first_name + ' ' + last_name
@@ -46,8 +47,8 @@ class Player:
     def get_season_points(self, season):
         return self.seasons[season].get_marqueur_points(self.role)
 
-    def get_ratio_points_salary(self):
-        return self.points / self.salary
+    def get_ratio_season_points(self, season):
+        return self.seasons[season].get_ratio_marqueur_points(self.role)
     
     
 class Season:
@@ -81,6 +82,9 @@ class Season:
             return 3 * self.n_goals + 1 * self.n_assists
         elif role == "G":
             return 3 * self.n_wins + 5 * self.n_shutouts + 3 * self.n_goals + 1 * self.n_assists
+
+    def get_ratio_marqueur_points(self, role):
+        return self.get_marqueur_points(role) / self.n_games_played
 
     def get_points(self):
         return self.n_goals + self.n_assists
