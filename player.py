@@ -1,4 +1,5 @@
-from datetime import date
+import datetime
+
 
 class Player:
     def __init__(self, id):
@@ -19,8 +20,9 @@ class Player:
 
     def set_age(self, birth_date):
         self.birth_date = birth_date
-        today = date.today()
-        self.age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+        today = datetime.date.today()
+        born = datetime.datetime.strptime(birth_date, '%Y-%m-%d')
+        self.age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
     def set_points(self, points):
         self.points = points

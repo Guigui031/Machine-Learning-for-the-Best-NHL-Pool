@@ -31,6 +31,7 @@ def dowload_teams_stats(season):
             continue
         r = requests.get(f'https://api-web.nhle.com/v1/club-stats/{team}/{season}/2', headers=headers)
         print(f"Response: {r.json()}")
+        # TODO: if message = Not Found then skip
         with open(f"data/{season}/teams/{team}.json", 'w') as f:
             json.dump(r.json(), f)
         time.sleep(2)
@@ -38,7 +39,7 @@ def dowload_teams_stats(season):
 
 def main():
     # download_players('20232024')
-    dowload_teams_stats('20232024')
+    dowload_teams_stats('20202021')
 
 
 if __name__ == '__main__':
