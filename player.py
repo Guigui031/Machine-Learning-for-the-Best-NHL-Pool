@@ -2,6 +2,8 @@ from datetime import date
 
 class Player:
     def __init__(self, id):
+        self.position = None
+        self.team = None
         self.salary = None
         self.points = None
         self.age = None
@@ -22,7 +24,15 @@ class Player:
 
     def set_salary(self, salary):
         self.salary = salary
+        
+    def set_team(self, team):
+        self.team = team
+        
+    def set_position(self, position_code):
+        self.position = position_code
 
     def get_ratio_points_salary(self):
         return self.points / self.salary
+    
+    
 
