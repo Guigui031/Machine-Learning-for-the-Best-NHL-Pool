@@ -6,14 +6,19 @@ from player import Player
 
 
 def get_json():
+    # with open("data/20232024/goalies_points_20232024.json", "r") as f:
+    #     data = json.load(f)
     with open("data/20232024/players_points_20232024.json", "r") as f:
         data = json.load(f)
-        return data
+    # data.update(new_data)
+    return data
 
 
 def get_all_player_ids(data):
     ids = []
     for player in data['points']:
+        ids.append(player['id'])
+    for player in data['wins']:
         ids.append(player['id'])
     return ids
 
@@ -73,13 +78,14 @@ def load_player(id):
 
 def main():
     data = get_json()
-    n = len(data['points'])
-    print(n)
-    ids = get_all_player_ids(data)
-    print(ids)
-    teams = get_all_teams_abbrev(data)
-    print(teams)
-    load_player('8478402')
+    print(data)
+    # n = len(data['points'])
+    # print(n)
+    # ids = get_all_player_ids(data)
+    # print(ids)
+    # teams = get_all_teams_abbrev(data)
+    # print(teams)
+    # load_player('8478402')
 
 
 if __name__ == "__main__":
