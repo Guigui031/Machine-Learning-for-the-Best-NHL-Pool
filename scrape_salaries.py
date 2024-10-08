@@ -1,3 +1,5 @@
+import time
+
 from bs4 import BeautifulSoup
 import requests
 import pandas
@@ -43,9 +45,7 @@ print(nhl_teams)
 final_df = pandas.DataFrame(columns=['name', 'salary'])
 
 for team in nhl_teams:
-    forwards = {}
-    defense = {}
-    goalies = {}
+    forwards, defense, goalies = [], [], []
     url = f"https://capwages.com/teams/{team}"
     w = requests.get(url)
     soup = BeautifulSoup(w.content)
@@ -63,11 +63,11 @@ for team in nhl_teams:
             if not name or not salary:
                 continue
             if i == 0:
-                forwards[name] = salary
+                forwards.append((name, salary))
             elif i == 1:
-                defense[name] = salary
+                defense.append((name, salary))
             elif i == 2:
-                goalies[name] = salary
+                goalies.append((name, salary))
 
         i += 1
 
@@ -75,6 +75,6 @@ for team in nhl_teams:
     defense_df = pandas.DataFrame(defense, columns=['name', 'salary'])
     goalies_df = pandas.DataFrame(goalies, columns=['name', 'salary'])
     final_df = pandas.concat([final_df, forwards_df, defense_df, goalies_df])
-    break
+    time.sleep(2)
 
-final_df.to_csv("data/20232024/players_salary.csv")
+final_df.to_csv("data/20232024/players_salary.tsv", sep="\t", index=False)
