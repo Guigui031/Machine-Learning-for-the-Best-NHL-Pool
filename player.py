@@ -2,6 +2,7 @@ from datetime import date
 
 class Player:
     def __init__(self, id):
+        self.salary_name = None
         self.position = None
         self.team = None
         self.salary = None
@@ -11,8 +12,10 @@ class Player:
         self.birth_date = None
         self.id = id
 
-    def set_name(self, name):
-        self.name = name
+    def set_name(self, first_name, last_name):
+        self.name = first_name + ' ' + last_name
+        self.salary_name = last_name + ', ' + first_name
+        
 
     def set_age(self, birth_date):
         self.birth_date = birth_date
