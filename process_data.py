@@ -8,19 +8,30 @@ def get_json():
         return data
 
 
-def get_ids(data):
+def get_all_player_ids(data):
     ids = []
     for player in data['points']:
         ids.append(player['id'])
     return ids
 
 
+def get_all_teams_abbrev(data):
+    abbrevs = []
+    for player in data['points']:
+        abbrev = player['teamAbbrev']
+        if abbrev not in abbrevs:
+            abbrevs.append(abbrev)
+    return abbrevs
+
+
 def main():
     data = get_json()
     n = len(data['points'])
     print(n)
-    ids = get_ids(data)
+    ids = get_all_player_ids(data)
     print(ids)
+    teams = get_all_teams_abbrev(data)
+    print(teams)
 
 if __name__ == "__main__":
     main()
