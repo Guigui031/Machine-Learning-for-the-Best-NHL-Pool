@@ -1,5 +1,7 @@
 import json
 import numpy as np
+import pandas
+
 from player import Player
 
 
@@ -32,17 +34,28 @@ def get_skater_info_from_team(team, skater_id):
         if player['id'] == skater_id:
             return player
 
+
+def get_player_salary(name):
+    players_salary = pandas.read_csv("data/20232024/players_salary.tsv", sep='\t')
+    results = players_salary[players_salary['name'] == name]
+    if len(results.index) == 0:
+        return None
+    salary = results.iloc[0]['salary']
+    return salary
+
+
 def load_player(id):
     pl_class = Player(id)
 
     with open(f"data/20232024/players/{id}.json") as f:
         pl_data = json.load(f)
+
     pl_class.set_team(pl_data['currentTeamAbbrev'])
     pl_team_data = get_skater_info_from_team(pl_class.team, id)
     pl_class.set_age(pl_data['birth_date'])
-    pl_class.set_name(pl_data['firstName']['default'] + ' ' + pl_data['lastName']['default'])
+    pl_class.set_name(pl_data['firstName']['default'], pl_data['lastName']['default'])
     pl_class.set_points(pl_team_data['points'])
-    pl_class.set_salary()
+    pl_class.set_salary(get_player_salary(pl_class.salary_name))
     pl_class.set_position(pl_data['position'])
 
 
