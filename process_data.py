@@ -3,15 +3,28 @@ import numpy as np
 import pandas
 
 from player import Player
+import data_download
 
 
 def get_json():
-    # with open("data/20232024/goalies_points_20232024.json", "r") as f:
-    #     data = json.load(f)
-    with open("data/20232024/players_points_20232024.json", "r") as f:
+    with open("data/20232024/goalies_points_20232024.json", "r") as f:
         data = json.load(f)
-    # data.update(new_data)
+    with open("data/20232024/players_points_20232024.json", "r") as f:
+        data.update(json.load(f))
     return data
+
+def get_season_standings(season):
+    data_download.download_season_standing(season)
+    with open(f"data/{season}/{season}_standings.json", "r") as f:
+        data = json.load(f)
+    return data
+
+
+def get_season_teams(season):
+    data_download.download_players_points(season)
+    with open(f"data/{season}/{season}_players_points.json", "r") as f:
+        data = json.load(f)
+    return get_all_teams_abbrev(data)
 
 
 def get_all_player_ids(data):
@@ -23,21 +36,27 @@ def get_all_player_ids(data):
     return ids
 
 
-def get_all_teams_abbrev(data):
+def get_all_teams_abbrev(players_points_data):
     abbrevs = []
-    for player in data['points']:
+    for player in players_points_data['points']:
         abbrev = player['teamAbbrev']
         if abbrev not in abbrevs:
             abbrevs.append(abbrev)
     return abbrevs
 
 
+def clean_pl_team_data(pl_team_data):
+    for key in ['goals', 'assists', 'wins', 'shutouts', 'gamesPlayed']:
+        if key not in pl_team_data.keys():
+            pl_team_data[key] = np.nan
+    return pl_team_data
+
 def get_skater_info_from_team(season, team, skater_id):
     with open(f"data/{season}/teams/{team}.json") as f:
         team_data = json.load(f)
     for player in team_data['skaters']:
         if str(player['playerId']) == skater_id:
-            return player
+            return clean_pl_team_data(player)
 
 
 def get_player_salary(name):
@@ -50,8 +69,8 @@ def get_player_salary(name):
 
 
 def load_season_points(pl_class):
-    for season in ['20202021', '20212022', '20222023', '20232024']:
-        pl_team_data = get_skater_info_from_team(season, pl_class.team, id)
+    for season in ['20232024']:
+        pl_team_data = get_skater_info_from_team(season, pl_class.team, pl_class.id)
         pl_class.set_season_points(season)
         pl_class.seasons[season].set_n_goals(pl_team_data['goals'])
         pl_class.seasons[season].set_n_assists(pl_team_data['assists'])
@@ -77,15 +96,16 @@ def load_player(id):
 
 
 def main():
-    data = get_json()
-    print(data)
-    # n = len(data['points'])
-    # print(n)
+    get_season_teams('20232024')
+    # data = get_json()
+    # print(data)
+    # # n = len(data['points'])
+    # # print(n)
     # ids = get_all_player_ids(data)
-    # print(ids)
-    # teams = get_all_teams_abbrev(data)
-    # print(teams)
-    # load_player('8478402')
+    # print(len(ids))
+    # # teams = get_all_teams_abbrev(data)
+    # # print(teams)
+    # # load_player('8478402')
 
 
 if __name__ == "__main__":

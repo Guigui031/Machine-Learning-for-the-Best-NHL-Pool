@@ -42,22 +42,6 @@ def regression_on_player(ratios_points_par_match):
     return ratio_predit
 
 
-def create_team():
-    players = load_players()
-    dataset = create_dataset(players)
-
-    # régression
-    for i in range(len(players)):
-        players[i].predict_points = regression_on_player(dataset[i,:])
-
-    # algo
-    meilleure_solution, meilleure_valeur = branch_and_bound(players)
-    print('meilleure_valeur', meilleure_valeur)
-    print('meilleure_solution')
-    for joueur in meilleure_solution:
-        print(joueur.role, joueur.name)
-
-
 # Fonction d'évaluation (borne supérieure)
 def calcul_borne_sup(solution, joueurs_restants):
     total_valeur = sum(joueur.predict_points for joueur in solution)
@@ -118,3 +102,27 @@ def branch_and_bound(joueurs):
         pile.append((indice + 1, solution_actuelle))
 
     return meilleure_solution, meilleure_valeur
+
+
+def create_team():
+    players = load_players()
+    dataset = create_dataset(players)
+
+    # régression
+    for i in range(len(players)):
+        players[i].predict_points = regression_on_player(dataset[i,:])
+
+    # algo
+    meilleure_solution, meilleure_valeur = branch_and_bound(players)
+    print('meilleure_valeur', meilleure_valeur)
+    print('meilleure_solution')
+    results = []
+    for joueur in meilleure_solution:
+        result = (joueur.role, joueur.name, joueur.salary. joueur.team)
+        print(result)
+        results.append(result)
+    pandas.DataFrame(results, columns=['role', 'name', 'salary', 'team']).to_csv('meilleure_solution.csv')
+
+
+if __name__ == '__main__':
+    create_team()
