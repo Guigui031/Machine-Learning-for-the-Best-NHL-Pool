@@ -1,6 +1,8 @@
 from process_data import *
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LinearRegression
+from pulp import LpMaximize, LpProblem, LpVariable, lpSum
 
 budget = 88000000
 n_goalies = 2
@@ -55,12 +57,12 @@ def calcul_borne_sup(solution, joueurs_restants):
 def est_faisable(solution):
     total_salaire = sum(joueur.salary for joueur in solution)
     nb_gardiens = len([j for j in solution if j.role == "G"])
-    nb_défenseurs = len([j for j in solution if j.role == "D"])
+    nb_defenseurs = len([j for j in solution if j.role == "D"])
     nb_attaquants = len([j for j in solution if j.role == "A"])
 
     return (total_salaire <= budget and
             # nb_gardiens == n_goalies and
-            0 <= nb_défenseurs <= n_def and
+            0 <= nb_defenseurs <= n_def and
             0 <= nb_attaquants <= n_atk)
 
 
@@ -102,6 +104,35 @@ def branch_and_bound(joueurs):
         pile.append((indice + 1, solution_actuelle))
 
     return meilleure_solution, meilleure_valeur
+
+def solve_problem(players):
+    # Define the problem
+    prob = LpProblem("Maximize_PPG", LpMaximize)
+
+    # Create decision variables (1 if player is selected, 0 otherwise)
+    x = {i: LpVariable(f"x_{i}", cat="Binary") for i in range(len(players))}
+
+    # Objective function: Maximize the total PPG
+    prob += lpSum(players[i].predict_points * x[i] for i in range(len(players)))
+
+    # Constraint: Budget limit
+    prob += lpSum(players[i].salary * x[i] for i in range(len(players))) <= 88000000
+
+    # Constraints: Role limits
+    prob += lpSum(x[i] for i in range(len(players)) if players[i].role == "A") <= 12
+    prob += lpSum(x[i] for i in range(len(players)) if players[i].role == "D") <= 6
+    prob += lpSum(x[i] for i in range(len(players)) if players[i].role == "G") <= 2
+
+    # Solve the problem
+    prob.solve()
+
+    # Display the results
+    selected_players = [players[i].name for i in range(len(players)) if x[i].value() == 1]
+    total_ppg = sum(players[i].predict_points for i in range(len(players)) if x[i].value() == 1)
+    total_salary = sum(players[i].salary for i in range(len(players)) if x[i].value() == 1)
+
+    return selected_players, total_ppg, total_salary
+
 
 
 def create_team():

@@ -12,7 +12,7 @@ class Player:
         self.role = None
         self.salary_name = None
         self.position = None
-        self.salary = np.inf
+        self.salary = 88000000
         self.points = None
         self.age = None
         self.name = None
