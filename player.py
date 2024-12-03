@@ -1,19 +1,23 @@
 import datetime
 
+import numpy as np
+
 
 class Player:
     def __init__(self, id):
+        self.last_name = None
+        self.first_name = None
         self.id = id
         self.seasons = {}
         self.role = None
         self.salary_name = None
         self.position = None
-        self.salary = None
+        self.salary = np.inf
         self.points = None
         self.age = None
         self.name = None
         self.birth_date = None
-        self.predict_points = None
+        self.predict_points = 0
         self.height = None
         self.weight = None
         self.country = None
@@ -21,6 +25,8 @@ class Player:
     def set_name(self, first_name, last_name):
         self.name = first_name + ' ' + last_name
         self.salary_name = last_name + ', ' + first_name
+        self.first_name = first_name
+        self.last_name = last_name
 
     def set_age(self, birth_date):
         self.birth_date = birth_date

@@ -59,7 +59,7 @@ def est_faisable(solution):
     nb_attaquants = len([j for j in solution if j.role == "A"])
 
     return (total_salaire <= budget and
-            nb_gardiens == n_goalies and
+            # nb_gardiens == n_goalies and
             0 <= nb_défenseurs <= n_def and
             0 <= nb_attaquants <= n_atk)
 

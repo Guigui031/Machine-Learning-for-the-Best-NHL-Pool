@@ -78,8 +78,9 @@ def get_player_salary(name):
     players_salary = pandas.read_csv("data/20232024/players_salary.tsv", sep='\t')
     results = players_salary[players_salary['name'] == name]
     if len(results.index) == 0:
-        return None
+        return np.inf
     salary = results.iloc[0]['salary']
+    salary = int(salary.replace('$', '').replace(',', ''))
     return salary
 
 
