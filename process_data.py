@@ -42,6 +42,47 @@ def get_all_player_ids(season, team):
         return []
 
 
+# function to normalize the data by the number of games played
+def process_data_skaters(df):
+  df['points_1'] = (df['goals_1'] + df['assists_1']) / df['games_1']
+  df['points_2'] = (df['goals_2'] + df['assists_2']) / df['games_2']
+  df['goals_1'] = df['goals_1'] / df['games_1']
+  df['goals_2'] = df['goals_2'] / df['games_2']
+  df['shots_1'] = df['shots_1'] / df['games_1']
+  df['shots_2'] = df['shots_2'] / df['games_2']
+  df['pim_1'] = df['pim_1'] / df['games_1']
+  df['pim_2'] = df['pim_2'] / df['games_2']
+  df['time_1'] = df['time_1'].apply(lambda s: int(str(s).split(':')[0])) / df['games_1']
+  df['time_2'] = df['time_2'].apply(lambda s: int(str(s).split(':')[0])) / df['games_2']
+  df['games_1'] = df['games_1'] / 82
+  df['games_2'] = df['games_2'] / 82
+  return df
+
+
+# function to extract the stats in the dict for a specific year and return zeros if the year is not there
+def get_year_data_skaters(player, year, index):
+    if year in player.seasons.keys():
+        pl_season = player.seasons[year]
+        return {'goals_'+index: pl_season.n_goals,
+                'assists_'+index: pl_season.n_assists,
+                'pim_'+index: pl_season.n_pim,
+                'games_'+index: pl_season.n_games_played,
+                'shots_'+index: pl_season.n_shots,
+                'time_'+index: pl_season.n_time,
+                'plus_minus_'+index: pl_season.n_plusMinus,
+                'team_'+index: pl_season.team
+                }
+    else:
+        return {'goals_'+index: 0,
+                'assists_'+index: 0,
+                'pim_'+index: 0,
+                'games_'+index: 0,
+                'shots_'+index: 0,
+                'time_'+index: 0,
+                'plus_minus_'+index: 0,
+                'team_'+index: 0
+                }
+
 # def get_all_player_ids(data):
 #     ids = []
 #     for player in data['points']:
