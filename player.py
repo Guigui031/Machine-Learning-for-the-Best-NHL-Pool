@@ -3,18 +3,20 @@ import datetime
 
 class Player:
     def __init__(self, id):
+        self.id = id
         self.seasons = {}
         self.role = None
         self.salary_name = None
         self.position = None
-        self.team = None
         self.salary = None
         self.points = None
         self.age = None
         self.name = None
         self.birth_date = None
-        self.id = id
         self.predict_points = None
+        self.height = None
+        self.weight = None
+        self.country = None
 
     def set_name(self, first_name, last_name):
         self.name = first_name + ' ' + last_name
@@ -29,8 +31,14 @@ class Player:
     def set_salary(self, salary):
         self.salary = salary
         
-    def set_team(self, team):
-        self.team = team
+    def set_country(self, country):
+        self.country = country
+
+    def set_weight(self, weight):
+        self.weight = weight
+
+    def set_height(self, height):
+        self.height = height
         
     def set_position(self, position_code):
         self.position = position_code
@@ -53,18 +61,39 @@ class Player:
     
 class Season:
     def __init__(self, season_id):
+        self.season_id = season_id
+        self.team = None
         self.n_games_played = None
         self.n_assists = None
         self.n_wins = None
         self.n_shutouts = None
         self.n_goals = None
-        self.season_id = season_id
+        self.n_pim = None
+        self.n_shots = None
+        self.n_plusMinus = None
+        self.n_time = None
+
+    def set_team(self, team):
+        self.team = team
+        # TODO: get abbrev from name
 
     def set_n_goals(self, n_goals):
         self.n_goals = n_goals
 
     def set_n_assists(self, n_assists):
         self.n_assists = n_assists
+
+    def set_n_pim(self, n_pim):
+        self.n_pim = n_pim
+
+    def set_n_shots(self, n_shots):
+        self.n_shots = n_shots
+
+    def set_n_time(self, n_time):
+        self.n_time = n_time
+
+    def set_n_plusMinus(self, n_plusMinus):
+        self.n_plusMinus = n_plusMinus
 
     def set_n_wins(self, n_wins):
         self.n_wins = n_wins

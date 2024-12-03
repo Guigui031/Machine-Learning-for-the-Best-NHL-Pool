@@ -42,6 +42,26 @@ def download_season_standing(season):
             json.dump(r.json(), f)
 
 
+def download_teams_roster(season, team):
+    path = f"data/{season}/teams/{team}.json"
+    if not os.path.exists(path):
+        if not os.path.exists(f"data/{season}/teams"):
+            os.mkdir(f"data/{season}/teams")
+        r = requests.get(f'https://api-web.nhle.com/v1/club-stats/{team}/{season}/2', headers=headers)
+        print(f"Response: {r.json()}")
+        with open(path, 'w') as f:
+            json.dump(r.json(), f)
+
+def download_player(id):
+    path = f"data/20232024/players/{id}.json"
+    if not os.path.exists(path):
+        if not os.path.exists(f"data/20232024/players"):
+            os.mkdir(f"data/20232024/players")
+        r = requests.get(f'https://api-web.nhle.com/v1/player/{id}/landing', headers=headers)
+        print(f"Response: {r.json()}")
+        with open(f"data/20232024/players/{id}.json", 'w') as f:
+            json.dump(r.json(), f)
+    
 # def dowload_teams_stats(season):
 #     data = get_json()
 #     teams = get_all_teams_abbrev(data)
