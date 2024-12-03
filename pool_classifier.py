@@ -121,9 +121,10 @@ def team_optimization_branch_and_bound(players, budget=budget, max_roles={"A": n
         """
         remaining_ppg = current_ppg
         remaining_salary = budget - current_salary
+        remaining_role_counts = role_counts.copy()
         for i in range(index, n):
             player = players[i]
-            if player.salary <= remaining_salary and role_counts[player.role] < max_roles[player.role]:
+            if player.salary <= remaining_salary and remaining_role_counts[player.role] < max_roles[player.role]:
                 remaining_ppg += player.predict_points
                 remaining_salary -= player.salary
             else:
@@ -136,8 +137,8 @@ def team_optimization_branch_and_bound(players, budget=budget, max_roles={"A": n
         # Prune if over budget or invalid role counts
         if current_salary > budget:
             return
-        for role, count in role_counts.items():
-            if count > max_roles.get(role, 0):
+        for role in max_roles.keys():
+            if role_counts[role] > max_roles[role]:
                 return
 
         # Update the best solution
