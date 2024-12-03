@@ -21,6 +21,7 @@ class Player:
         self.height = None
         self.weight = None
         self.country = None
+        self.team = None
 
     def set_name(self, first_name, last_name):
         self.name = first_name + ' ' + last_name
@@ -45,6 +46,9 @@ class Player:
 
     def set_height(self, height):
         self.height = height
+
+    def set_team(self, team):
+        self.team = team
         
     def set_position(self, position_code):
         self.position = position_code

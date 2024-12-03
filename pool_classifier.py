@@ -69,7 +69,7 @@ def est_faisable(solution):
 # Algorithme Branch and Bound
 def branch_and_bound(joueurs):
     meilleure_solution = []
-    meilleure_valeur = 0
+    meilleure_valeur = 0  # ppg de l'équipe
 
     # Pile pour explorer les solutions
     pile = [(0, [])]  # (indice du joueur à explorer, solution partielle)
