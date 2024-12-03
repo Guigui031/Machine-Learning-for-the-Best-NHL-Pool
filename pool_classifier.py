@@ -105,6 +105,78 @@ def branch_and_bound(joueurs):
 
     return meilleure_solution, meilleure_valeur
 
+
+def team_optimization_branch_and_bound(players, budget=budget, max_roles={"A": n_atk, "D": n_def, "G": n_goalies}):
+    n = len(players)
+    best_team = []
+    best_ppg = 0
+
+    # Sort players by ppg/salary ratio for efficiency
+    players.sort(key=lambda p: p.predict_points / p.salary, reverse=True)
+
+    def bound(index, current_ppg, current_salary, role_counts):
+        """
+        Compute the upper bound of the maximum PPG for the current branch.
+        Assumes we can pick the remaining players up to the budget limit.
+        """
+        remaining_ppg = current_ppg
+        remaining_salary = budget - current_salary
+        for i in range(index, n):
+            player = players[i]
+            if player.salary <= remaining_salary and role_counts[player.role] < max_roles[player.role]:
+                remaining_ppg += player.predict_points
+                remaining_salary -= player.salary
+            else:
+                break
+        return remaining_ppg
+
+    def branch_and_bound(index, current_team, current_ppg, current_salary, role_counts):
+        nonlocal best_team, best_ppg
+
+        # Prune if over budget or invalid role counts
+        if current_salary > budget:
+            return
+        for role, count in role_counts.items():
+            if count > max_roles.get(role, 0):
+                return
+
+        # Update the best solution
+        if current_ppg > best_ppg:
+            best_ppg = current_ppg
+            best_team = current_team[:]
+
+        # Compute the upper bound
+        if index >= n:
+            return
+        upper_bound = bound(index, current_ppg, current_salary, role_counts)
+        if upper_bound <= best_ppg:
+            return  # Prune the branch
+
+        # Branch: include the current player
+        if index < n:
+            player = players[index]
+            role_counts[player.role] += 1
+            current_team.append(player)
+            branch_and_bound(
+                index + 1,
+                current_team,
+                current_ppg + player.predict_points,
+                current_salary + player.salary,
+                role_counts,
+            )
+            # Backtrack: exclude the player
+            current_team.pop()
+            role_counts[player.role] -= 1
+
+        # Branch: exclude the current player
+        branch_and_bound(index + 1, current_team, current_ppg, current_salary, role_counts)
+
+    # Initialize the algorithm
+    branch_and_bound(0, [], 0, 0, {"A": 0, "D": 0, "G": 0})
+
+    return best_team, best_ppg
+
+
 def solve_problem(players):
     # Define the problem
     prob = LpProblem("Maximize_PPG", LpMaximize)
