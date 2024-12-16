@@ -169,6 +169,12 @@ def load_player(id, seasons):
 
     return pl_class
 
+# function to normalize the data
+def normalize_data(data, standardization):
+    for col in ['height', 'weight', 'age', 'plus_minus_1', 'plus_minus_2', 'time_1', 'time_2']:
+        data[col] = (data[col] - standardization[col]['mu']) / standardization[col]['sig']
+    return data
+
 
 def main():
     load_player('8483505', ['20232024'])
