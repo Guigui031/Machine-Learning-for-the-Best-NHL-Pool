@@ -1,0 +1,27 @@
+{
+  "config": {
+    "seasons": [
+      "20202021",
+      "20212022",
+      "20222023",
+      "20232024"
+    ],
+    "min_games_threshold": 100,
+    "min_seasons_threshold": 3,
+    "salary_cap": 88000000
+  },
+  "data_integrity": {
+    "seasons_checked": 4,
+    "valid_seasons": [
+      "20202021",
+      "20212022",
+      "20222023",
+      "20232024"
+    ],
+    "invalid_seasons": [],
+    "total_teams": 127,
+    "total_players": 122,
+    "data_quality_issues": []
+  },
+  "pipeline_status": "ready"
+}
