@@ -235,12 +235,12 @@ class HockeyFeatures:
                     df_momentum[stat1_col].replace(0, np.nan) * 100
                 )
 
-                # Momentum category
+                # Momentum category (convert to string to avoid categorical issues)
                 df_momentum[f'{stat}_momentum'] = pd.cut(
                     df_momentum[f'{stat}_yoy_pct_change'],
                     bins=[-np.inf, -20, -5, 5, 20, np.inf],
                     labels=['declining', 'slight_decline', 'stable', 'improving', 'breakout']
-                )
+                ).astype(str)
 
         # Overall performance momentum
         if all(col in df_momentum.columns for col in ['ppg_1', 'ppg_2']):
@@ -248,12 +248,12 @@ class HockeyFeatures:
                 df_momentum['ppg_2'] - df_momentum['ppg_1']
             ) / df_momentum['ppg_1'].replace(0, np.nan)
 
-            # Momentum strength categories
+            # Momentum strength categories (convert to string to avoid categorical issues)
             df_momentum['momentum_strength'] = pd.cut(
                 df_momentum['performance_momentum'],
                 bins=[-np.inf, -0.2, -0.05, 0.05, 0.2, np.inf],
                 labels=['strong_decline', 'decline', 'stable', 'improvement', 'strong_improvement']
-            )
+            ).astype(str)
 
         logger.info("Performance momentum features created")
         return df_momentum

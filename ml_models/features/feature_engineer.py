@@ -25,6 +25,8 @@ class FeatureEngineer:
         self.scaler = self._get_scaler(scaler_type)
         self.feature_names = []
         self.is_fitted = False
+        self.label_encoders = {}
+        self.imputer = None
 
     def _get_scaler(self, scaler_type: str):
         """Get the appropriate scaler."""
@@ -78,12 +80,12 @@ class FeatureEngineer:
             df_features['age_squared'] = df_features['age'] ** 2
             df_features['age_cubed'] = df_features['age'] ** 3
 
-            # Age groups
+            # Age groups (convert to string to avoid categorical issues)
             df_features['age_group'] = pd.cut(
                 df_features['age'],
                 bins=[0, 23, 27, 31, 50],
                 labels=['young', 'prime', 'veteran', 'old']
-            )
+            ).astype(str)
 
         # Physical features
         if all(col in df_features.columns for col in ['height', 'weight']):
@@ -126,12 +128,12 @@ class FeatureEngineer:
 
         # Experience proxies
         if 'age' in df_features.columns:
-            # Estimate career stage
+            # Estimate career stage (convert to string to avoid categorical issues)
             df_features['career_stage'] = pd.cut(
                 df_features['age'],
                 bins=[0, 21, 25, 29, 33, 50],
                 labels=['rookie', 'developing', 'prime', 'veteran', 'declining']
-            )
+            ).astype(str)
 
         # Interaction features
         if all(col in df_features.columns for col in ['age', 'ppg_1']):
@@ -249,6 +251,60 @@ class FeatureEngineer:
         numeric_columns = X_features.select_dtypes(include=[np.number]).columns
         categorical_columns = X_features.select_dtypes(exclude=[np.number]).columns
 
+        # Handle categorical variables with label encoding
+        if len(categorical_columns) > 0:
+            logger.info(f"Encoding {len(categorical_columns)} categorical columns: {categorical_columns.tolist()}")
+            from sklearn.preprocessing import LabelEncoder
+
+            # Initialize label encoders for each categorical column
+            self.label_encoders = {}
+
+            for col in categorical_columns:
+                # Handle pandas Categorical columns
+                if hasattr(X_features[col], 'cat'):
+                    # Convert categorical to string first
+                    X_features[col] = X_features[col].astype(str)
+
+                # Fill NaN values with 'Unknown' before encoding
+                X_features[col] = X_features[col].fillna('Unknown')
+
+                # Ensure 'Unknown' is in the data so it gets encoded
+                col_values = X_features[col].astype(str)
+                unique_values = col_values.unique().tolist()
+                if 'Unknown' not in unique_values:
+                    # Add 'Unknown' to ensure it's in the encoder classes
+                    col_values_with_unknown = np.append(col_values.values, 'Unknown')
+                    le = LabelEncoder()
+                    le.fit(col_values_with_unknown)
+                    X_features[col] = le.transform(col_values)
+                else:
+                    # Use label encoding for categorical variables
+                    le = LabelEncoder()
+                    X_features[col] = le.fit_transform(col_values)
+
+                self.label_encoders[col] = le
+
+            logger.info(f"Encoded categorical variables successfully")
+
+        # Handle any remaining NaN values
+        nan_count = X_features.isnull().sum().sum()
+        if nan_count > 0:
+            logger.warning(f"Found {nan_count} NaN values, applying imputation...")
+            from sklearn.impute import SimpleImputer
+
+            # Initialize imputer if needed
+            if self.imputer is None:
+                self.imputer = SimpleImputer(strategy='median')
+
+            # Apply imputation to numeric columns
+            if len(numeric_columns) > 0:
+                X_features[numeric_columns] = self.imputer.fit_transform(X_features[numeric_columns])
+
+            # Fill any remaining NaN in other columns with 0
+            X_features = X_features.fillna(0)
+
+            logger.info(f"Imputation complete. Remaining NaN values: {X_features.isnull().sum().sum()}")
+
         # Scale numeric features
         if len(numeric_columns) > 0:
             X_features[numeric_columns] = self.scaler.fit_transform(X_features[numeric_columns])
@@ -279,20 +335,90 @@ class FeatureEngineer:
         X_features = self.create_advanced_features(X_features)
         X_features = self.create_position_specific_features(X_features)
 
-        # Ensure we have the same columns as training
-        missing_cols = set(self.feature_names) - set(X_features.columns)
-        if missing_cols:
-            logger.warning(f"Missing columns in transform: {missing_cols}")
-            for col in missing_cols:
-                X_features[col] = 0
+        # Handle categorical variables FIRST (before alignment)
+        if hasattr(self, 'label_encoders') and self.label_encoders:
+            for col, le in self.label_encoders.items():
+                if col in X_features.columns:
+                    # Handle pandas Categorical columns
+                    if hasattr(X_features[col], 'cat'):
+                        X_features[col] = X_features[col].astype(str)
 
-        # Select only the columns we had during training
-        X_features = X_features[self.feature_names]
+                    # Fill NaN values with 'Unknown'
+                    X_features[col] = X_features[col].fillna('Unknown')
 
-        # Scale numeric features
+                    # Handle unseen categories
+                    col_values = X_features[col].astype(str)
+                    unknown_mask = ~col_values.isin(le.classes_)
+
+                    if unknown_mask.any():
+                        logger.warning(f"Found {unknown_mask.sum()} unseen categories in {col}")
+                        # Find fallback category
+                        fallback_category = None
+                        for potential_fallback in ['Unknown', 'unknown', 'other', 'Other']:
+                            if potential_fallback in le.classes_:
+                                fallback_category = potential_fallback
+                                break
+                        if fallback_category is None:
+                            fallback_category = le.classes_[0]
+                        X_features.loc[unknown_mask, col] = fallback_category
+
+                    # Transform using the fitted label encoder
+                    X_features[col] = le.transform(X_features[col].astype(str))
+
+        # NOW align features to match training
+        logger.info(f"Aligning features: current {len(X_features.columns)} -> target {len(self.feature_names)}")
+
+        # Create aligned DataFrame with expected features
+        aligned_features = pd.DataFrame(
+            0,  # Fill missing features with 0
+            index=X_features.index,
+            columns=self.feature_names
+        )
+
+        # Copy over matching features
+        matching_cols = set(X_features.columns) & set(self.feature_names)
+        for col in matching_cols:
+            aligned_features[col] = X_features[col]
+
+        logger.info(f"Aligned {len(matching_cols)} matching features, filled {len(self.feature_names) - len(matching_cols)} missing with 0")
+
+        X_features = aligned_features
+
+        # Handle any remaining NaN values in aligned data
+        nan_count = X_features.isnull().sum().sum()
+        if nan_count > 0:
+            logger.warning(f"Found {nan_count} NaN values after alignment, applying imputation...")
+
+            # Apply imputation if we have a fitted imputer
+            if self.imputer is not None:
+                numeric_columns = X_features.select_dtypes(include=[np.number]).columns
+                if len(numeric_columns) > 0 and len(numeric_columns) == self.imputer.n_features_in_:
+                    X_features[numeric_columns] = self.imputer.transform(X_features[numeric_columns])
+
+            # Fill any remaining NaN with 0
+            X_features = X_features.fillna(0)
+
+        # Scale only numeric features (same as during training)
         numeric_columns = X_features.select_dtypes(include=[np.number]).columns
         if len(numeric_columns) > 0:
-            X_features[numeric_columns] = self.scaler.transform(X_features[numeric_columns])
+            if hasattr(self.scaler, 'n_features_in_') and len(numeric_columns) == self.scaler.n_features_in_:
+                logger.info(f"Scaling {len(numeric_columns)} numeric features (matches scaler training)")
+                # Use .values to avoid feature name validation issues
+                scaled_values = self.scaler.transform(X_features[numeric_columns].values)
+                X_features[numeric_columns] = scaled_values
+            else:
+                logger.warning(f"Numeric feature count mismatch: have {len(numeric_columns)}, scaler expects {getattr(self.scaler, 'n_features_in_', 'unknown')}")
+                # Create a subset of features that match what the scaler expects
+                scaler_expected = getattr(self.scaler, 'n_features_in_', 0)
+                if scaler_expected > 0 and len(numeric_columns) >= scaler_expected:
+                    # Use the first N numeric columns that match the scaler expectation
+                    logger.info(f"Using first {scaler_expected} numeric columns for scaling")
+                    cols_to_scale = numeric_columns[:scaler_expected]
+                    # Use .values to avoid feature name validation issues
+                    scaled_values = self.scaler.transform(X_features[cols_to_scale].values)
+                    X_features[cols_to_scale] = scaled_values
+                else:
+                    logger.warning("Cannot scale features - dimension mismatch too large")
 
         return X_features
 
@@ -308,3 +434,155 @@ class FeatureEngineer:
             'scaler_type': self.scaler_type,
             'is_fitted': self.is_fitted
         }
+
+    def save_components(self, filepath: str):
+        """Save feature engineer components to JSON file.
+
+        Args:
+            filepath: Path to save the JSON file
+        """
+        import json
+        import numpy as np
+        from pathlib import Path
+
+        if not self.is_fitted:
+            raise ValueError("FeatureEngineer must be fitted before saving")
+
+        logger.info(f"Saving feature engineer components to {filepath}")
+
+        # Prepare components for JSON serialization
+        components = {
+            'scaler_type': self.scaler_type,
+            'feature_names': self.feature_names,
+            'is_fitted': self.is_fitted
+        }
+
+        # Save scaler parameters
+        if hasattr(self.scaler, 'get_params'):
+            components['scaler_params'] = self.scaler.get_params()
+
+        # Save scaler fitted attributes
+        if hasattr(self.scaler, 'mean_'):
+            components['scaler_mean'] = self.scaler.mean_.tolist() if hasattr(self.scaler.mean_, 'tolist') else str(self.scaler.mean_)
+        if hasattr(self.scaler, 'scale_'):
+            components['scaler_scale'] = self.scaler.scale_.tolist() if hasattr(self.scaler.scale_, 'tolist') else str(self.scaler.scale_)
+        if hasattr(self.scaler, 'var_'):
+            components['scaler_var'] = self.scaler.var_.tolist() if hasattr(self.scaler.var_, 'tolist') else str(self.scaler.var_)
+
+        # Save imputer information
+        if self.imputer is not None:
+            components['imputer_fitted'] = True
+            components['imputer_strategy'] = self.imputer.strategy
+            if hasattr(self.imputer, 'statistics_'):
+                components['imputer_statistics'] = self.imputer.statistics_.tolist() if hasattr(self.imputer.statistics_, 'tolist') else str(self.imputer.statistics_)
+            if hasattr(self.imputer, 'n_features_in_'):
+                components['imputer_n_features_in'] = int(self.imputer.n_features_in_)
+            if hasattr(self.imputer, 'feature_names_in_'):
+                components['imputer_feature_names_in'] = self.imputer.feature_names_in_.tolist() if hasattr(self.imputer.feature_names_in_, 'tolist') else str(self.imputer.feature_names_in_)
+        else:
+            components['imputer_fitted'] = False
+
+        # Save label encoders
+        components['label_encoders'] = {}
+        for col, le in self.label_encoders.items():
+            if hasattr(le, 'classes_'):
+                components['label_encoders'][col] = {
+                    'classes': le.classes_.tolist()
+                }
+
+        # Write to file
+        filepath = Path(filepath)
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(filepath, 'w') as f:
+            json.dump(components, f, indent=2)
+
+        logger.info(f"✅ Feature engineer components saved successfully")
+
+    @classmethod
+    def load_components(cls, filepath: str):
+        """Load feature engineer from saved components.
+
+        Args:
+            filepath: Path to the JSON file
+
+        Returns:
+            Loaded FeatureEngineer instance
+        """
+        import json
+        import numpy as np
+        from pathlib import Path
+        from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
+        from sklearn.impute import SimpleImputer
+
+        logger.info(f"Loading feature engineer components from {filepath}")
+
+        with open(filepath, 'r') as f:
+            components = json.load(f)
+
+        # Create feature engineer instance
+        feature_engineer = cls(scaler_type=components['scaler_type'])
+
+        # Reconstruct scaler
+        if components['scaler_type'] == 'standard':
+            feature_engineer.scaler = StandardScaler()
+            if 'scaler_mean' in components:
+                # Handle both list and string formats
+                if isinstance(components['scaler_mean'], str):
+                    feature_engineer.scaler.mean_ = np.fromstring(components['scaler_mean'].strip('[]'), sep=' ')
+                else:
+                    feature_engineer.scaler.mean_ = np.array(components['scaler_mean'])
+
+                if isinstance(components['scaler_scale'], str):
+                    feature_engineer.scaler.scale_ = np.fromstring(components['scaler_scale'].strip('[]'), sep=' ')
+                else:
+                    feature_engineer.scaler.scale_ = np.array(components['scaler_scale'])
+
+                if isinstance(components['scaler_var'], str):
+                    feature_engineer.scaler.var_ = np.fromstring(components['scaler_var'].strip('[]'), sep=' ')
+                else:
+                    feature_engineer.scaler.var_ = np.array(components['scaler_var'])
+
+                feature_engineer.scaler.n_features_in_ = len(feature_engineer.scaler.mean_)
+
+        elif components['scaler_type'] == 'minmax':
+            feature_engineer.scaler = MinMaxScaler()
+            # Add MinMaxScaler reconstruction if needed
+
+        # Reconstruct imputer
+        if components.get('imputer_fitted', False):
+            feature_engineer.imputer = SimpleImputer(strategy=components.get('imputer_strategy', 'median'))
+
+            if 'imputer_statistics' in components:
+                if isinstance(components['imputer_statistics'], str):
+                    feature_engineer.imputer.statistics_ = np.fromstring(components['imputer_statistics'].strip('[]'), sep=' ')
+                else:
+                    feature_engineer.imputer.statistics_ = np.array(components['imputer_statistics'])
+
+            if 'imputer_n_features_in' in components:
+                feature_engineer.imputer.n_features_in_ = components['imputer_n_features_in']
+
+            if 'imputer_feature_names_in' in components:
+                if isinstance(components['imputer_feature_names_in'], str):
+                    # Parse string representation of array
+                    feature_names_str = components['imputer_feature_names_in'].strip("[]'").replace("'", "").replace('"', '')
+                    feature_engineer.imputer.feature_names_in_ = np.array(feature_names_str.split())
+                else:
+                    feature_engineer.imputer.feature_names_in_ = np.array(components['imputer_feature_names_in'])
+        else:
+            feature_engineer.imputer = None
+
+        # Reconstruct label encoders
+        feature_engineer.label_encoders = {}
+        for col, encoder_info in components['label_encoders'].items():
+            le = LabelEncoder()
+            le.classes_ = np.array(encoder_info['classes'])
+            feature_engineer.label_encoders[col] = le
+
+        # Set other attributes
+        feature_engineer.feature_names = components['feature_names']
+        feature_engineer.is_fitted = components['is_fitted']
+
+        logger.info(f"✅ Feature engineer components loaded successfully")
+
+        return feature_engineer

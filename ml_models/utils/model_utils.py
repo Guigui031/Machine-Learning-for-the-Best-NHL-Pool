@@ -9,6 +9,7 @@ import logging
 from typing import Dict, Any, List, Tuple, Optional
 from pathlib import Path
 import json
+from scipy import stats
 
 logger = logging.getLogger(__name__)
 
@@ -317,7 +318,6 @@ class ModelUtils:
         residual_std = np.std(residuals)
 
         # Calculate confidence interval width
-        from scipy import stats
         alpha = 1 - confidence_level
         z_score = stats.norm.ppf(1 - alpha/2)
         interval_width = z_score * residual_std

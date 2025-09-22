@@ -1,9 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python test:*)",
-      "Bash(python3:*)",
-      "Bash(conda run:*)"
+      "Bash(jupyter --version)",
+      "Bash(conda:*)"
     ],
     "deny": [],
     "ask": []

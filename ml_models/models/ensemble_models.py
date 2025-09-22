@@ -116,7 +116,7 @@ class EnsembleModels:
             )
 
         return BaggingRegressor(
-            base_estimator=base_estimator,
+            estimator=base_estimator,  # Changed from base_estimator to estimator
             n_estimators=n_estimators,
             random_state=self.random_state,
             n_jobs=-1
