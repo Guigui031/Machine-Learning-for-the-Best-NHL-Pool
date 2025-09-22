@@ -17,21 +17,21 @@ def test_imports():
     
     try:
         from src.config.settings import API_CONFIG, DATA_CONFIG
-        print("✓ Config imports working")
+        print("Config imports working")
         
         from src.utils.api import APIClient
-        print("✓ API client imports working")
+        print("API client imports working")
         
         from src.data.collectors.games import GameCollector
-        print("✓ Game collector imports working")
+        print("Game collector imports working")
         
         from src.data.models.game import GameData, PlayerGameStats
-        print("✓ Data models imports working")
+        print("Data models imports working")
         
         return True
         
     except ImportError as e:
-        print(f"✗ Import failed: {e}")
+        print(f"Import failed: {e}")
         return False
 
 def test_config():
@@ -45,11 +45,11 @@ def test_config():
         print(f"Data Path: {DATA_CONFIG.base_path}")
         print(f"Seasons: {DATA_CONFIG.seasons}")
         print(f"Position limits: {DATA_CONFIG.positions}")
-        print("✓ Configuration looks good")
+        print("Configuration looks good")
         return True
         
     except Exception as e:
-        print(f"✗ Config test failed: {e}")
+        print(f"Config test failed: {e}")
         return False
 
 def test_api_client():
@@ -60,12 +60,12 @@ def test_api_client():
         from src.utils.api import APIClient
         
         with APIClient() as client:
-            print(f"✓ API client created successfully")
+            print(f"API client created successfully")
             print(f"Base URL: {client.base_url}")
             return True
             
     except Exception as e:
-        print(f"✗ API client test failed: {e}")
+        print(f"API client test failed: {e}")
         return False
 
 def test_data_models():
@@ -88,7 +88,7 @@ def test_data_models():
             ice_time=1200  # 20 minutes in seconds
         )
         
-        print(f"✓ Created player stats: {player_stats.player_name}")
+        print(f"Created player stats: {player_stats.player_name}")
         print(f"  Points: {player_stats.points}")
         print(f"  Ice time: {player_stats.ice_time_minutes:.1f} min")
         
@@ -104,18 +104,18 @@ def test_data_models():
             away_score=4
         )
         
-        print(f"✓ Created game data: {game_data.away_team} @ {game_data.home_team}")
+        print(f"Created game data: {game_data.away_team} @ {game_data.home_team}")
         print(f"  Winner: {game_data.winning_team}")
         
         return True
         
     except Exception as e:
-        print(f"✗ Data model test failed: {e}")
+        print(f"Data model test failed: {e}")
         return False
 
 def main():
     """Run all basic tests"""
-    print("🏒 Testing NHL Data Collection Structure")
+    print("Testing NHL Data Collection Structure")
     print("=" * 50)
     
     tests = [
@@ -131,16 +131,16 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"✗ Test {test.__name__} crashed: {e}")
+            print(f"Test {test.__name__} crashed: {e}")
     
     print("\n" + "=" * 50)
     print(f"Results: {passed}/{len(tests)} tests passed")
     
     if passed == len(tests):
-        print("🎉 All basic tests passed! Ready for API testing.")
+        print("All basic tests passed! Ready for API testing.")
         return True
     else:
-        print("❌ Some tests failed. Check the errors above.")
+        print("Some tests failed. Check the errors above.")
         return False
 
 if __name__ == "__main__":

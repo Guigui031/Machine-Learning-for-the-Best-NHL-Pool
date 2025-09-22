@@ -497,7 +497,7 @@ class FeatureEngineer:
         with open(filepath, 'w') as f:
             json.dump(components, f, indent=2)
 
-        logger.info(f"✅ Feature engineer components saved successfully")
+        logger.info(f"Feature engineer components saved successfully")
 
     @classmethod
     def load_components(cls, filepath: str):
@@ -583,6 +583,6 @@ class FeatureEngineer:
         feature_engineer.feature_names = components['feature_names']
         feature_engineer.is_fitted = components['is_fitted']
 
-        logger.info(f"✅ Feature engineer components loaded successfully")
+        logger.info(f"Feature engineer components loaded successfully")
 
         return feature_engineer

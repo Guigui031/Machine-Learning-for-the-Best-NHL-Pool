@@ -57,14 +57,14 @@ class NHLModelPredictor:
             # Override feature names with model metadata (ground truth)
             self.feature_engineer.feature_names = self.metadata['feature_names']
 
-            print(f"✅ Loaded model: {self.metadata['best_model_name']}")
-            print(f"✅ Performance: RMSE={self.metadata['performance_metrics']['rmse']:.4f}")
-            print(f"✅ Features: {len(self.feature_engineer.feature_names)}")
+            print(f"Loaded model: {self.metadata['best_model_name']}")
+            print(f"Performance: RMSE={self.metadata['performance_metrics']['rmse']:.4f}")
+            print(f"Features: {len(self.feature_engineer.feature_names)}")
 
             return True
 
         except Exception as e:
-            print(f"❌ Error loading model artifacts: {e}")
+            print(f"Error loading model artifacts: {e}")
             return False
 
     def _reconstruct_feature_engineer(self):
@@ -128,7 +128,7 @@ class NHLModelPredictor:
         if self.model is None or self.feature_engineer is None:
             raise ValueError("Model not loaded. Call load_model_artifacts() first.")
 
-        print(f"📊 Input data shape: {player_data.shape}")
+        print(f"Input data shape: {player_data.shape}")
 
         # Validate required columns
         required_base_cols = ['goals_1', 'assists_1', 'games_1', 'goals_2', 'assists_2', 'games_2']
@@ -144,15 +144,15 @@ class NHLModelPredictor:
 
         # Apply hockey feature engineering
         X_hockey = HockeyFeatures.create_all_hockey_features(X_raw)
-        print(f"📈 After hockey features: {X_hockey.shape}")
+        print(f"After hockey features: {X_hockey.shape}")
 
         # Apply feature engineering
         X_processed = self.feature_engineer.transform(X_hockey)
-        print(f"⚙️ After feature engineering: {X_processed.shape}")
+        print(f"After feature engineering: {X_processed.shape}")
 
         # Align features with training
         X_aligned = self._align_features(X_processed)
-        print(f"🔧 After alignment: {X_aligned.shape}")
+        print(f"After alignment: {X_aligned.shape}")
 
         # Make predictions
         predictions = self.model.predict(X_aligned.values)
@@ -175,14 +175,14 @@ class NHLModelPredictor:
         extra_features = actual_features - expected_features
 
         if missing_features:
-            print(f"⚠️ Missing {len(missing_features)} features (will fill with 0):")
+            print(f"Missing {len(missing_features)} features (will fill with 0):")
             for feat in sorted(list(missing_features))[:5]:  # Show first 5
                 print(f"   - {feat}")
             if len(missing_features) > 5:
                 print(f"   ... and {len(missing_features) - 5} more")
 
         if extra_features:
-            print(f"⚠️ {len(extra_features)} extra features (will ignore):")
+            print(f"{len(extra_features)} extra features (will ignore):")
             for feat in sorted(list(extra_features))[:5]:  # Show first 5
                 print(f"   + {feat}")
             if len(extra_features) > 5:
@@ -197,12 +197,12 @@ class NHLModelPredictor:
 
         # Copy matching features
         matching_features = expected_features & actual_features
-        print(f"✅ Copying {len(matching_features)} matching features")
+        print(f"Copying {len(matching_features)} matching features")
 
         for feature in matching_features:
             aligned_data[feature] = X_processed[feature]
 
-        print(f"🔧 Final aligned shape: {aligned_data.shape}")
+        print(f"Final aligned shape: {aligned_data.shape}")
         return aligned_data
 
     def get_model_info(self) -> Dict[str, Any]:
@@ -241,7 +241,7 @@ def predict_nhl_performance(player_data: pd.DataFrame, models_dir: str = "models
 
 if __name__ == "__main__":
     # Test the predictor
-    print("🧪 Testing NHL Model Predictor...")
+    print("Testing NHL Model Predictor...")
 
     # Create sample data
     sample_data = pd.DataFrame({
@@ -258,7 +258,7 @@ if __name__ == "__main__":
 
     try:
         results = predict_nhl_performance(sample_data)
-        print("✅ Prediction successful!")
+        print("Prediction successful!")
         print(results)
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        print(f"Test failed: {e}")

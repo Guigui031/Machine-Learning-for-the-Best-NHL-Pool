@@ -280,10 +280,10 @@ class BaselineModels:
                     fitted_model = model.fit(X, y)
 
                 fitted_models[name] = fitted_model
-                logger.info(f"✅ {name} fitted successfully")
+                logger.info(f"{name} fitted successfully")
 
             except Exception as e:
-                logger.error(f"❌ Error fitting {name}: {e}")
+                logger.error(f"Error fitting {name}: {e}")
                 continue
 
         self.fitted_models = fitted_models

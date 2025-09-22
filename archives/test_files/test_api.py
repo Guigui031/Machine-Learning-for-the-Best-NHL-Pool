@@ -27,7 +27,7 @@ def test_schedule_api():
                 total_games = sum(len(date_entry.get('games', [])) 
                                 for date_entry in schedule['gamesByDate'])
                 
-                print(f"✓ Schedule downloaded successfully")
+                print(f"Schedule downloaded successfully")
                 print(f"  Total game dates: {total_dates}")
                 print(f"  Total games: {total_games}")
                 
@@ -43,11 +43,11 @@ def test_schedule_api():
                 
                 return schedule
             else:
-                print("✗ Schedule format unexpected")
+                print("Schedule format unexpected")
                 return None
                 
     except Exception as e:
-        print(f"✗ Schedule test failed: {e}")
+        print(f"Schedule test failed: {e}")
         return None
 
 def test_single_game():
@@ -71,7 +71,7 @@ def test_single_game():
                 game_details = collector.get_game_details(game_id)
                 
                 if game_details:
-                    print(f"✓ Game details downloaded successfully")
+                    print(f"Game details downloaded successfully")
                     
                     # Check what data we got
                     if 'awayTeam' in game_details:
@@ -102,14 +102,14 @@ def test_single_game():
                     
                     return game_details
                 else:
-                    print("✗ No game details returned")
+                    print("No game details returned")
                     return None
             else:
-                print("✗ Could not get schedule to find game ID")
+                print("Could not get schedule to find game ID")
                 return None
                 
     except Exception as e:
-        print(f"✗ Single game test failed: {e}")
+        print(f"Single game test failed: {e}")
         return None
 
 def test_player_logs():
@@ -130,7 +130,7 @@ def test_player_logs():
             
             if game_logs and 'gameLog' in game_logs:
                 games_count = len(game_logs['gameLog'])
-                print(f"✓ Player logs downloaded successfully")
+                print(f"Player logs downloaded successfully")
                 print(f"  Games played: {games_count}")
                 
                 # Show first few games
@@ -145,11 +145,11 @@ def test_player_logs():
                 
                 return game_logs
             else:
-                print("✗ No game logs returned or wrong format")
+                print("No game logs returned or wrong format")
                 return None
                 
     except Exception as e:
-        print(f"✗ Player logs test failed: {e}")
+        print(f"Player logs test failed: {e}")
         return None
 
 def test_data_persistence():
@@ -159,12 +159,12 @@ def test_data_persistence():
     try:
         # Check if data directory was created
         if os.path.exists('data'):
-            print("✓ Data directory exists")
+            print("Data directory exists")
             
             # Check for cached files
             season_dirs = [d for d in os.listdir('data') if os.path.isdir(f'data/{d}')]
             if season_dirs:
-                print(f"✓ Found season directories: {season_dirs}")
+                print(f"Found season directories: {season_dirs}")
                 
                 for season_dir in season_dirs:
                     season_path = f'data/{season_dir}'
@@ -180,12 +180,12 @@ def test_data_persistence():
             return True
             
     except Exception as e:
-        print(f"✗ Caching test failed: {e}")
+        print(f"Caching test failed: {e}")
         return False
 
 def main():
     """Run API tests"""
-    print("🏒 Testing NHL API Data Collection")
+    print("Testing NHL API Data Collection")
     print("=" * 50)
     print("Note: These tests make real API calls and may take a moment...")
     
@@ -204,11 +204,11 @@ def main():
             result = test()
             if result is not None:
                 passed += 1
-                results[test.__name__] = "✓ PASSED"
+                results[test.__name__] = "PASSED"
             else:
-                results[test.__name__] = "✗ FAILED"
+                results[test.__name__] = "FAILED"
         except Exception as e:
-            results[test.__name__] = f"✗ CRASHED: {e}"
+            results[test.__name__] = f"CRASHED: {e}"
     
     print("\n" + "=" * 50)
     print("Test Results:")
@@ -218,9 +218,9 @@ def main():
     print(f"\nSummary: {passed}/{len(tests)} tests passed")
     
     if passed == len(tests):
-        print("🎉 All API tests passed! Your new data collection is working.")
+        print("All API tests passed! Your new data collection is working.")
     else:
-        print("⚠️ Some tests failed. Check the errors above.")
+        print("Some tests failed. Check the errors above.")
     
     return passed == len(tests)
 

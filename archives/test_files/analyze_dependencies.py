@@ -140,19 +140,19 @@ def main():
     # Analyze dependencies
     dependency_map = analyze_project_dependencies()
 
-    print("\n📊 DEPENDENCY SUMMARY:")
+    print("\nDEPENDENCY SUMMARY:")
     print(f"Notebooks analyzed: {len(dependency_map['notebooks'])}")
     print(f"Python files analyzed: {len(dependency_map['python_files'])}")
     print(f"Local modules found: {len(dependency_map['local_modules'])}")
     print(f"External packages: {len(dependency_map['external_packages'])}")
 
-    print("\n📋 NOTEBOOK DEPENDENCIES:")
+    print("\nNOTEBOOK DEPENDENCIES:")
     for notebook, imports in dependency_map['notebooks'].items():
         local_imports = [imp for imp in imports if imp in dependency_map['local_modules']]
         print(f"{notebook}:")
         print(f"  Local: {local_imports}")
 
-    print("\n🔍 LOCAL MODULE USAGE:")
+    print("\nLOCAL MODULE USAGE:")
     for module in sorted(dependency_map['local_modules']):
         used_by = []
         for notebook, imports in dependency_map['notebooks'].items():
@@ -165,23 +165,23 @@ def main():
         if used_by:
             print(f"{module}.py: Used by {used_by}")
         else:
-            print(f"{module}.py: ⚠️ Not directly used by notebooks")
+            print(f"{module}.py: Not directly used by notebooks")
 
     # Find potentially unused files
     unused_files = find_unused_files(dependency_map)
 
-    print("\n🗑️ POTENTIALLY UNUSED FILES:")
+    print("\nPOTENTIALLY UNUSED FILES:")
     if unused_files:
         for file in unused_files:
             print(f"  - {file}")
     else:
         print("  None found - all files appear to be used")
 
-    print("\n💾 Saving detailed analysis...")
+    print("\nSaving detailed analysis...")
     with open('dependency_analysis.json', 'w') as f:
         json.dump(dependency_map, f, indent=2)
 
-    print("✅ Analysis complete! See dependency_analysis.json for details")
+    print("Analysis complete! See dependency_analysis.json for details")
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,8 @@
       "Bash(conda:*)",
       "Bash(mkdir:*)",
       "Bash(python:*)",
-      "Bash(py:*)"
+      "Bash(py:*)",
+      "Bash(dir docs)"
     ],
     "deny": [],
     "ask": []

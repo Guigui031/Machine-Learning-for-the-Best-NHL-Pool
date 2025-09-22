@@ -155,34 +155,34 @@ SOLUTION METHODS:
 ```
 Feature Importance (XGBoost Ensemble)
 │
-├─ 🥇 Previous Season PPG (0.28)
+├─ Previous Season PPG (0.28)
 │   └─ Most predictive of future performance
 │
-├─ 🥈 Games Played History (0.15)
+├─ Games Played History (0.15)
 │   └─ Availability and consistency indicator
 │
-├─ 🥉 Age (0.12)
+├─ Age (0.12)
 │   └─ Career trajectory and development
 │
-├─ 4️⃣ Team Performance (0.11)
+├─ Team Performance (0.11)
 │   └─ Context and opportunity impact
 │
-├─ 5️⃣ Goals per Game (0.09)
+├─ Goals per Game (0.09)
 │   └─ Offensive production rate
 │
-├─ 6️⃣ Position (0.08)
+├─ Position (0.08)
 │   └─ Role-specific performance expectations
 │
-├─ 7️⃣ Assists per Game (0.07)
+├─ Assists per Game (0.07)
 │   └─ Playmaking ability
 │
-├─ 8️⃣ Shots per Game (0.04)
+├─ Shots per Game (0.04)
 │   └─ Shot volume and opportunity creation
 │
-├─ 9️⃣ Plus/Minus (0.03)
+├─ Plus/Minus (0.03)
 │   └─ Defensive responsibility and team play
 │
-└─ 🔟 Time on Ice (0.03)
+└─ Time on Ice (0.03)
     └─ Ice time and usage patterns
 ```
 
@@ -195,13 +195,13 @@ Algorithm Comparison (Performance vs Efficiency)
                    │ Optimal │  Fast   │ Memory  │ Scalable│
                    │Solution │Execute  │Efficient│         │
 ┌──────────────────┼─────────┼─────────┼─────────┼─────────┤
-│Linear Programming│   ⭐⭐⭐⭐⭐  │  ⭐⭐⭐⭐⭐   │  ⭐⭐⭐⭐    │  ⭐⭐⭐⭐⭐   │
+│Linear Programming│   *****  │  *****   │  ****    │  *****   │
 ├──────────────────┼─────────┼─────────┼─────────┼─────────┤
-│Branch & Bound    │   ⭐⭐⭐⭐   │  ⭐⭐      │  ⭐⭐⭐     │  ⭐⭐⭐     │
+│Branch & Bound    │   ****   │  **      │  ***     │  ***     │
 ├──────────────────┼─────────┼─────────┼─────────┼─────────┤
-│Greedy Heuristic  │   ⭐⭐⭐    │  ⭐⭐⭐⭐⭐   │  ⭐⭐⭐⭐⭐    │  ⭐⭐⭐⭐    │
+│Greedy Heuristic  │   ***    │  *****   │  *****    │  ****    │
 ├──────────────────┼─────────┼─────────┼─────────┼─────────┤
-│Random Selection  │   ⭐      │  ⭐⭐⭐⭐⭐   │  ⭐⭐⭐⭐⭐    │  ⭐⭐⭐⭐⭐   │
+│Random Selection  │   *      │  *****   │  *****    │  *****   │
 └──────────────────┴─────────┴─────────┴─────────┴─────────┘
 
 Performance Results:

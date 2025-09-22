@@ -1,4 +1,4 @@
-# Feature Engineering Documentation 🔧
+# Feature Engineering Documentation
 
 ## Overview
 
@@ -20,9 +20,9 @@ Final Feature Matrix (86+ columns)
 
 ```
 Feature Engineering
-├── 🏒 hockey_features.py     # Domain-specific hockey features
-├── ⚙️ feature_engineer.py   # ML preprocessing & scaling
-└── 📊 Feature Categories:
+├── hockey_features.py     # Domain-specific hockey features
+├── feature_engineer.py   # ML preprocessing & scaling
+└── Feature Categories:
     ├── Basic Stats (19)      # Goals, assists, games, etc.
     ├── Hockey Features (26)  # Age curves, momentum, team context
     └── ML Features (41)      # Interactions, polynomials, ratios
@@ -583,10 +583,10 @@ def optimize_dtypes(df: pd.DataFrame) -> pd.DataFrame:
 
 ```python
 # Vectorized operations instead of loops
-# ✅ Fast
+# Fast
 df['ppg'] = (df['goals'] + df['assists']) / df['games']
 
-# ❌ Slow
+# Slow
 df['ppg'] = df.apply(lambda x: (x['goals'] + x['assists']) / x['games'], axis=1)
 ```
 

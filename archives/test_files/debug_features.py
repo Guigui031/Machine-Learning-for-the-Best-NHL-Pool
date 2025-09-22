@@ -12,7 +12,7 @@ from ml_models.features import FeatureEngineer, HockeyFeatures
 def debug_feature_mismatch():
     """Debug the feature mismatch issue"""
 
-    print("🔍 Debugging feature mismatch...")
+    print("Debugging feature mismatch...")
 
     # Load expected features from model metadata
     models_dir = Path("models_saved")
@@ -21,7 +21,7 @@ def debug_feature_mismatch():
         metadata = json.load(f)
 
     expected_features = metadata['feature_names']
-    print(f"📋 Expected features from model: {len(expected_features)}")
+    print(f"Expected features from model: {len(expected_features)}")
 
     # Load saved components
     components_path = models_dir / "feature_engineer_components.json"
@@ -29,7 +29,7 @@ def debug_feature_mismatch():
         components = json.load(f)
 
     saved_features = components['feature_names']
-    print(f"💾 Saved features from components: {len(saved_features)}")
+    print(f"Saved features from components: {len(saved_features)}")
 
     # Create test data similar to what would be used in prediction
     test_data = pd.DataFrame({
@@ -59,26 +59,26 @@ def debug_feature_mismatch():
         'team_2': ['TOR']
     })
 
-    print(f"🧪 Test data shape: {test_data.shape}")
-    print(f"🧪 Test data columns: {list(test_data.columns)}")
+    print(f"Test data shape: {test_data.shape}")
+    print(f"Test data columns: {list(test_data.columns)}")
 
     # Apply hockey features
     X_hockey = HockeyFeatures.create_all_hockey_features(test_data)
-    print(f"🏒 Hockey features shape: {X_hockey.shape}")
+    print(f"Hockey features shape: {X_hockey.shape}")
 
     # Apply feature engineering
     fe = FeatureEngineer(scaler_type='standard')
     X_engineered = fe.fit_transform(X_hockey, pd.Series([1.0]))  # dummy target
 
     actual_features = list(X_engineered.columns)
-    print(f"⚙️ Generated features: {len(actual_features)}")
+    print(f"Generated features: {len(actual_features)}")
 
     # Compare features
     expected_set = set(expected_features)
     saved_set = set(saved_features)
     actual_set = set(actual_features)
 
-    print(f"\n📊 Feature comparison:")
+    print(f"\nFeature comparison:")
     print(f"Expected (model): {len(expected_set)}")
     print(f"Saved (components): {len(saved_set)}")
     print(f"Actual (generated): {len(actual_set)}")
@@ -88,14 +88,14 @@ def debug_feature_mismatch():
     extra_in_actual = actual_set - expected_set
 
     if missing_from_actual:
-        print(f"\n❌ Missing from actual ({len(missing_from_actual)}):")
+        print(f"\nMissing from actual ({len(missing_from_actual)}):")
         for feat in sorted(missing_from_actual)[:10]:  # Show first 10
             print(f"  - {feat}")
         if len(missing_from_actual) > 10:
             print(f"  ... and {len(missing_from_actual) - 10} more")
 
     if extra_in_actual:
-        print(f"\n➕ Extra in actual ({len(extra_in_actual)}):")
+        print(f"\nExtra in actual ({len(extra_in_actual)}):")
         for feat in sorted(extra_in_actual)[:10]:  # Show first 10
             print(f"  + {feat}")
         if len(extra_in_actual) > 10:
@@ -106,12 +106,12 @@ def debug_feature_mismatch():
     extra_in_saved = saved_set - expected_set
 
     if missing_from_saved:
-        print(f"\n❌ Missing from saved components ({len(missing_from_saved)}):")
+        print(f"\nMissing from saved components ({len(missing_from_saved)}):")
         for feat in sorted(missing_from_saved)[:10]:
             print(f"  - {feat}")
 
     if extra_in_saved:
-        print(f"\n➕ Extra in saved components ({len(extra_in_saved)}):")
+        print(f"\nExtra in saved components ({len(extra_in_saved)}):")
         for feat in sorted(extra_in_saved)[:10]:
             print(f"  + {feat}")
 

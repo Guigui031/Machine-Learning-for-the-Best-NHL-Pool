@@ -2,7 +2,7 @@
 
 This folder contains files that have been moved out of the main codebase during the refactoring process. These files are preserved for historical reference but are not part of the active development workflow.
 
-## 📁 Archive Structure
+## Archive Structure
 
 ### `old_notebooks/`
 Historical Jupyter notebooks that have been superseded by newer versions:
@@ -32,7 +32,7 @@ Outdated documentation and guides:
 - `nhl_data_pipeline_summary.json` - Pipeline summary
 - `run_tests.bat` - Windows batch test runner
 
-## 🔄 Refactoring Summary
+## Refactoring Summary
 
 **Date**: September 2024
 **Reason**: Clean up codebase and improve maintainability
@@ -48,7 +48,7 @@ The following files remain in the main directory:
 - Modern ML architecture (`ml_models/`, `models_saved/`)
 - Updated documentation (`docs/`, `CLAUDE.md`)
 
-## 🗂️ File Recovery
+## File Recovery
 
 If any archived file is needed for active development:
 1. Locate the file in the appropriate archive subdirectory
@@ -56,7 +56,7 @@ If any archived file is needed for active development:
 3. Update any import statements or dependencies
 4. Test functionality with current codebase
 
-## 📚 Historical Context
+## Historical Context
 
 These archived files represent the evolution of the NHL Pool Optimization project:
 - Early experimental notebooks

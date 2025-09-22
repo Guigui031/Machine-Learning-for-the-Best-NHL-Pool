@@ -1,12 +1,12 @@
-# NHL Machine Learning System Documentation 🏒
+# NHL Machine Learning System Documentation
 
-## 📚 Documentation Overview
+## Documentation Overview
 
 This documentation provides comprehensive coverage of the NHL Machine Learning System, organized by module for easy navigation.
 
-## 📖 Module Documentation
+## Module Documentation
 
-### 🗂️ Core Modules
+### Core Modules
 
 | Module | Description | Documentation |
 |--------|-------------|---------------|
@@ -17,7 +17,7 @@ This documentation provides comprehensive coverage of the NHL Machine Learning S
 | **Optimization** | Fantasy team selection, constraints | [`optimization.md`](optimization.md) |
 | **Evaluation** | Cross-validation, metrics, performance | [`evaluation.md`](evaluation.md) |
 
-### 📊 Visual Documentation
+### Visual Documentation
 
 | Graphics | Description | Location |
 |----------|-------------|----------|
@@ -27,7 +27,7 @@ This documentation provides comprehensive coverage of the NHL Machine Learning S
 | **Model Performance** | Performance charts and comparisons | [`graphics/model-performance.md`](graphics/model-performance.md) |
 | **Hockey Analytics** | Domain-specific visualizations | [`graphics/hockey-analytics.md`](graphics/hockey-analytics.md) |
 
-## 🚀 Quick Navigation
+## Quick Navigation
 
 ### Getting Started
 - [**System Overview**](overview.md) - High-level system description
@@ -44,7 +44,7 @@ This documentation provides comprehensive coverage of the NHL Machine Learning S
 - [**Configuration**](configuration.md) - System configuration options
 - [**Glossary**](glossary.md) - Hockey and ML terminology
 
-## 📊 System Performance
+## System Performance
 
 **Current Best Model**: Lasso Regression
 - **RMSE**: 0.209 PPG
@@ -52,7 +52,7 @@ This documentation provides comprehensive coverage of the NHL Machine Learning S
 - **Features**: 86 hockey-specific engineered features
 - **Training Data**: 858 player-seasons
 
-## 🏗️ Architecture Summary
+## Architecture Summary
 
 ```
 NHL API → Data Processing → Feature Engineering → ML Training → Production Deployment
@@ -60,7 +60,7 @@ NHL API → Data Processing → Feature Engineering → ML Training → Producti
 19 columns  Cleaned Data   86 Features        Best Model    Fantasy Optimization
 ```
 
-## 🔧 Key Technologies
+## Key Technologies
 
 - **Python**: Core language
 - **Scikit-learn**: Machine learning framework
@@ -69,16 +69,16 @@ NHL API → Data Processing → Feature Engineering → ML Training → Producti
 - **Joblib**: Model serialization
 - **JSON**: Component serialization
 
-## 📈 Project Status
+## Project Status
 
-- ✅ **Data Pipeline**: Complete and tested
-- ✅ **Feature Engineering**: 86+ features implemented
-- ✅ **Model Training**: Ensemble methods working
-- ✅ **Production API**: NHLModelPredictor ready
-- ✅ **Optimization**: Fantasy team selection
-- ✅ **Documentation**: Comprehensive coverage
+- **Data Pipeline**: Complete and tested
+- **Feature Engineering**: 86+ features implemented
+- **Model Training**: Ensemble methods working
+- **Production API**: NHLModelPredictor ready
+- **Optimization**: Fantasy team selection
+- **Documentation**: Comprehensive coverage
 
-## 🤝 Contributing
+## Contributing
 
 When contributing to the documentation:
 
@@ -88,7 +88,7 @@ When contributing to the documentation:
 4. **Test Code**: Ensure all examples work
 5. **Update Index**: Add new documents to this README
 
-## 📞 Support
+## Support
 
 For documentation issues or questions:
 1. Check the relevant module documentation

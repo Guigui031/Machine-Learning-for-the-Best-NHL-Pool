@@ -2,14 +2,14 @@
 
 A machine learning-powered system for optimizing NHL fantasy hockey team selection using predictive analytics and mathematical optimization.
 
-## 🏒 Overview
+## Overview
 
 This system predicts NHL player performance and selects optimal fantasy teams within salary and position constraints using:
 - **Machine Learning**: Ensemble models (XGBoost, SVR, SGD) for PPG prediction
 - **Optimization**: Linear Programming and Branch & Bound algorithms
 - **Data Pipeline**: Automated NHL API data collection and processing
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 ```bash
@@ -57,15 +57,15 @@ python model_predictor.py
 python pool_classifier.py
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-├── 📊 Core Notebooks
+├── Core Notebooks
 │   ├── NHL_ML_Models_Complete.ipynb    # Complete ML pipeline
 │   ├── Team_Optimization_Notebook.ipynb  # Team optimization
 │   └── ML_for_NHL.ipynb                # Original analysis
 │
-├── 🔧 Core Modules
+├── Core Modules
 │   ├── data_download.py                # NHL API data fetching
 │   ├── process_data.py                 # Data processing & normalization
 │   ├── player.py                       # Player & Season classes
@@ -76,7 +76,7 @@ python pool_classifier.py
 │   ├── data_validation.py             # Data quality validation
 │   └── config.py                      # Configuration settings
 │
-├── 🤖 ML Models (Structured)
+├── ML Models (Structured)
 │   ├── ml_models/                     # Modern ML architecture
 │   │   ├── models/                    # Model implementations
 │   │   ├── features/                  # Feature engineering
@@ -84,7 +84,7 @@ python pool_classifier.py
 │   │   └── utils/                     # ML utilities
 │   └── models_saved/                  # Trained model artifacts
 │
-├── 📚 Documentation
+├── Documentation
 │   ├── docs/                          # Comprehensive documentation
 │   │   ├── data-module.md
 │   │   ├── models-module.md
@@ -94,7 +94,7 @@ python pool_classifier.py
 │   │   └── graphs/                    # Visualization assets
 │   └── CLAUDE.md                      # Development guide
 │
-├── 🏗️ Infrastructure
+├── Infrastructure
 │   ├── src/                           # Legacy structured code
 │   ├── requirements.txt               # Dependencies
 │   └── archives/                      # Archived files
@@ -105,7 +105,7 @@ python pool_classifier.py
 │       └── documentation/
 ```
 
-## 🎯 Key Features
+## Key Features
 
 ### Machine Learning Pipeline
 - **Ensemble Methods**: XGBoost, SVR, SGD, Logistic Regression
@@ -125,7 +125,7 @@ python pool_classifier.py
 - **Data Validation**: Comprehensive quality checks and cleaning
 - **Caching**: Efficient data storage and retrieval
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 | Component | Metric | Value |
 |-----------|--------|-------|
@@ -134,7 +134,7 @@ python pool_classifier.py
 | **Data Coverage** | Players | ~800 active NHL players |
 | **Constraints** | Salary Cap | $88M with position limits |
 
-## 🔧 Configuration
+## Configuration
 
 Key settings in `config.py` and `CLAUDE.md`:
 - NHL API endpoints and rate limits
@@ -142,7 +142,7 @@ Key settings in `config.py` and `CLAUDE.md`:
 - Optimization constraints
 - Data validation rules
 
-## 🚧 Development
+## Development
 
 ### Testing
 ```bash
@@ -155,7 +155,7 @@ Key settings in `config.py` and `CLAUDE.md`:
 - **Visual Guides**: Generated charts in `docs/graphs/`
 - **API Reference**: Docstrings in all core modules
 
-## 📈 Results
+## Results
 
 The system typically generates:
 - **Optimal Teams**: 20 players maximizing predicted PPG
@@ -163,14 +163,14 @@ The system typically generates:
 - **Efficiency**: 95-98% salary cap utilization
 - **Accuracy**: Validated through backtesting on historical data
 
-## 🤝 Contributing
+## Contributing
 
 1. Follow existing code structure and documentation standards
 2. Add comprehensive docstrings and type hints
 3. Include tests for new functionality
 4. Update relevant documentation in `docs/`
 
-## 📞 Support
+## Support
 
 - **Documentation**: See `docs/` folder for detailed guides
 - **Configuration**: Check `CLAUDE.md` for development setup

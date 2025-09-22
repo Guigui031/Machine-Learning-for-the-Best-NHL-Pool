@@ -2,7 +2,7 @@
 
 This documentation provides comprehensive guides to understand and work with the NHL Pool Optimization system - a machine learning-powered fantasy hockey team selection tool.
 
-## 📚 Documentation Structure
+## Documentation Structure
 
 ### Core Module Documentation
 - **[Data Module](data-module.md)** - Data collection, processing, and validation
@@ -15,7 +15,7 @@ This documentation provides comprehensive guides to understand and work with the
 - **[Graphs Folder](graphs/)** - Generated visualization charts
 - **[Markdown Diagrams](graphs/markdown_diagrams.md)** - Text-based system diagrams
 
-## 🎯 Quick Start Guide
+## Quick Start Guide
 
 ### Understanding the System
 1. **Start with**: [Workflow Documentation](workflow-documentation.md) for the big picture
@@ -35,7 +35,7 @@ This documentation provides comprehensive guides to understand and work with the
 - **Optimization Results** - Algorithm performance comparison
 - **Feature Importance** - ML model feature analysis
 
-## 🔧 System Overview
+## System Overview
 
 ### What This System Does
 The NHL Pool Optimization system:
@@ -59,7 +59,7 @@ The NHL Pool Optimization system:
 - **Data Scale**: ~800 players across 4 seasons
 - **Constraints**: $88M salary cap, position limits
 
-## 📊 Generated Visualizations
+## Generated Visualizations
 
 ### Available Charts (PNG format in `docs/graphs/`)
 1. **system_architecture.png** - Complete system overview
@@ -74,7 +74,7 @@ The NHL Pool Optimization system:
 - Performance comparison tables
 - Feature importance hierarchies
 
-## 🚀 Documentation Highlights
+## Documentation Highlights
 
 ### For Data Scientists
 - **Machine Learning Pipeline**: Ensemble methods with XGBoost, SVR, SGD
@@ -101,7 +101,7 @@ The NHL Pool Optimization system:
 4. **Multi-Season Analysis**: Historical data spanning 4 NHL seasons
 5. **Visualization Suite**: Both programmatic charts and text-based diagrams
 
-## 📈 Results Summary
+## Results Summary
 
 ### Model Performance
 - **Best Ensemble**: R² = 0.768, MSE = 0.076

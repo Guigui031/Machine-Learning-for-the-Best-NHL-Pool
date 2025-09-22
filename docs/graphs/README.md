@@ -2,7 +2,7 @@
 
 This directory contains Python scripts to generate comprehensive visualization graphs for the NHL Pool Optimization system. The graphs provide visual insights into system architecture, data flow, machine learning performance, and optimization results.
 
-## 📊 Available Visualizations
+## Available Visualizations
 
 ### 1. System Architecture (`create_system_architecture.py`)
 **Output**: `system_architecture.png/pdf`
@@ -52,7 +52,7 @@ This directory contains Python scripts to generate comprehensive visualization g
 - Data distribution exploration
 - Age vs performance relationships
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Generate All Graphs
 ```bash
@@ -84,7 +84,7 @@ python create_feature_importance.py
 python create_data_flow.py
 ```
 
-## 📋 Requirements
+## Requirements
 
 ### Python Packages
 ```bash
@@ -97,7 +97,7 @@ pip install plotly  # For interactive graphs (future enhancement)
 pip install networkx  # For network-style diagrams
 ```
 
-## 📁 Output Files
+## Output Files
 
 All scripts generate both PNG (high-resolution) and PDF (vector) formats:
 
@@ -123,7 +123,7 @@ docs/graphs/
 └── data_exploration_charts.pdf
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Colors and Styling
 Each script uses consistent color schemes:
@@ -151,7 +151,7 @@ colors = {
 }
 ```
 
-## 📊 Graph Descriptions
+## Graph Descriptions
 
 ### System Architecture Features
 - **Layered Design**: Clear separation of system layers
@@ -183,7 +183,7 @@ colors = {
 - **Solution Quality**: Optimality gap analysis
 - **Constraint Impact**: Which constraints limit performance most
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -215,7 +215,7 @@ plt.close(fig)
 plt.rcParams['font.family'] = 'DejaVu Sans'
 ```
 
-## 🚀 Advanced Usage
+## Advanced Usage
 
 ### Batch Generation with Custom Parameters
 ```python
@@ -242,7 +242,7 @@ python generate_all_graphs.py
 # Then use generated images in documentation/reports
 ```
 
-## 📈 Future Enhancements
+## Future Enhancements
 
 - **Interactive Visualizations**: Plotly-based interactive charts
 - **Real-time Updates**: Live performance monitoring dashboards

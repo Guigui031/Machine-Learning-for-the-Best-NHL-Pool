@@ -200,10 +200,10 @@ class EnsembleModels:
                 logger.info(f"Fitting ensemble {name}...")
                 fitted_model = model.fit(X, y)
                 fitted_ensembles[name] = fitted_model
-                logger.info(f"✅ Ensemble {name} fitted successfully")
+                logger.info(f"Ensemble {name} fitted successfully")
 
             except Exception as e:
-                logger.error(f"❌ Error fitting ensemble {name}: {e}")
+                logger.error(f"Error fitting ensemble {name}: {e}")
                 continue
 
         self.fitted_ensembles = fitted_ensembles

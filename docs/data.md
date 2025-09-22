@@ -1,4 +1,4 @@
-# Data Pipeline Documentation 📊
+# Data Pipeline Documentation
 
 ## Overview
 
@@ -8,10 +8,10 @@ The data pipeline handles NHL data acquisition, processing, and modeling. It pro
 
 ```
 Data Pipeline
-├── 🌐 data_download.py     # NHL API integration
-├── 🔄 process_data.py      # Data cleaning & processing
-├── 👤 player.py           # Player data models
-└── 🏒 team.py             # Team data models
+├── data_download.py     # NHL API integration
+├── process_data.py      # Data cleaning & processing
+├── player.py           # Player data models
+└── team.py             # Team data models
 ```
 
 ## Data Sources
@@ -435,7 +435,7 @@ if not validation_results['is_valid']:
     for issue in validation_results['issues']:
         print(f"  - {issue}")
 else:
-    print("✅ Data quality validation passed")
+    print("Data quality validation passed")
 ```
 
 ## Troubleshooting

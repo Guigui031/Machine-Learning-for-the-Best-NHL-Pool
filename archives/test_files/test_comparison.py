@@ -26,7 +26,7 @@ def test_old_approach():
         data = response.json()
         
         if 'leaders' in data:
-            print(f"✓ Got {len(data['leaders'])} player season totals")
+            print(f"Got {len(data['leaders'])} player season totals")
             
             # Show what data looks like
             for i, player in enumerate(data['leaders'][:3]):
@@ -45,11 +45,11 @@ def test_old_approach():
             
             return data
         else:
-            print("✗ Unexpected data format")
+            print("Unexpected data format")
             return None
             
     except Exception as e:
-        print(f"✗ Old approach test failed: {e}")
+        print(f"Old approach test failed: {e}")
         return None
 
 def test_new_approach():
@@ -68,7 +68,7 @@ def test_new_approach():
             
             if game_logs and 'gameLog' in game_logs:
                 games = game_logs['gameLog']
-                print(f"✓ Got {len(games)} individual game records for McDavid")
+                print(f"Got {len(games)} individual game records for McDavid")
                 
                 # Show what game-level data looks like
                 print("  Sample games:")
@@ -93,11 +93,11 @@ def test_new_approach():
                 
                 return game_logs
             else:
-                print("✗ Could not get game logs")
+                print("Could not get game logs")
                 return None
                 
     except Exception as e:
-        print(f"✗ New approach test failed: {e}")
+        print(f"New approach test failed: {e}")
         return None
 
 def test_feature_richness():
@@ -177,7 +177,7 @@ def test_data_volume():
 
 def main():
     """Run comparison tests"""
-    print("🏒 NHL Data Collection: Old vs New Comparison")
+    print("NHL Data Collection: Old vs New Comparison")
     print("=" * 60)
     
     # Test both approaches
@@ -192,8 +192,8 @@ def main():
     
     print("\n" + "=" * 60)
     print("SUMMARY:")
-    print("Old approach: ❌ Limited seasonal aggregates, few features")
-    print("New approach: ✅ Rich game-by-game context, many features") 
+    print("Old approach: Limited seasonal aggregates, few features")
+    print("New approach: Rich game-by-game context, many features") 
     print("\nThe new approach gives you:")
     print("• 80x more training data")  
     print("• 3x more features per data point")

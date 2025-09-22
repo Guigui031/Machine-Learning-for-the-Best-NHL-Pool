@@ -3,13 +3,13 @@
 **Date**: September 22, 2024
 **Purpose**: Comprehensive analysis of notebook dependencies to identify redundant files
 
-## 🎯 Analysis Results
+## Analysis Results
 
-### ✅ **CONCLUSION: No Redundant Files Found**
+### **CONCLUSION: No Redundant Files Found**
 
 After thorough analysis, **all Python modules in the root directory are actively used** either directly by notebooks or indirectly through module dependencies.
 
-## 📊 Detailed Dependency Mapping
+## Detailed Dependency Mapping
 
 ### **Notebook Dependencies**
 
@@ -70,29 +70,29 @@ Imports:
 - `player.py` → **Used by**: `process_data.py`, optimization notebooks
 - `team.py` → **Used by**: `ML_for_NHL.ipynb`, `process_data.py`
 
-## 🏗️ Optimized Project Structure
+## Optimized Project Structure
 
 ### **Current Structure (All Files Needed)**
 ```
 Root Directory: 10 Core Python Files
-├── 🔧 Core Processing
+├── Core Processing
 │   ├── process_data.py         ✅ Used by all notebooks
 │   ├── data_download.py        ✅ Used by data pipeline
 │   ├── data_validation.py      ✅ Used by data pipeline
 │   └── data_pipeline.py        ✅ Used by ML notebook
 │
-├── 🤖 Machine Learning
+├── Machine Learning
 │   ├── ensemble_learning.py    ✅ Used by 2 notebooks
 │   └── model_predictor.py      ✅ Used by ML notebook
 │
-├── 🎯 Optimization
+├── Optimization
 │   └── pool_classifier.py      ✅ Used by original notebook
 │
-├── 📊 Data Models
+├── Data Models
 │   ├── player.py               ✅ Used by notebooks & modules
 │   └── team.py                 ✅ Used by notebook & modules
 │
-└── ⚙️ Configuration
+└── Configuration
     └── config.py               ✅ Used by multiple modules
 ```
 
@@ -112,7 +112,7 @@ src/                            📋 Legacy structure (minimal usage)
 └── Structured code modules
 ```
 
-## 🔍 Refactoring Assessment
+## Refactoring Assessment
 
 ### **Files Analyzed for Redundancy**: 10 Python files
 ### **Files Found to be Redundant**: 0 files
@@ -133,9 +133,9 @@ src/                            📋 Legacy structure (minimal usage)
 ✅ No orphaned modules: Confirmed
 ```
 
-## 🎯 Recommendations
+## Recommendations
 
-### **Current State: Optimal** ✅
+### **Current State: Optimal**
 The current structure represents the **minimal viable codebase** with no redundancy:
 
 1. **All files are necessary** for notebook functionality
@@ -145,22 +145,22 @@ The current structure represents the **minimal viable codebase** with no redunda
 
 ### **Alternative Approaches Considered:**
 
-#### ❌ **Option 1**: Archive `team.py`
+#### **Option 1**: Archive `team.py`
 **Rejected**: Used by `ML_for_NHL.ipynb` and `process_data.py`
 
-#### ❌ **Option 2**: Archive `data_download.py`
+#### **Option 2**: Archive `data_download.py`
 **Rejected**: Essential for `process_data.py` and `data_pipeline.py`
 
-#### ❌ **Option 3**: Archive `data_validation.py`
+#### **Option 3**: Archive `data_validation.py`
 **Rejected**: Critical for data quality in pipeline modules
 
-### **✅ Recommended Actions:**
+### **Recommended Actions:**
 1. **Keep current structure** - it's already optimized
 2. **Maintain clear documentation** of dependencies
 3. **Monitor for future redundancy** as system evolves
 4. **Consider consolidation** only if modules become truly unused
 
-## 📋 File Inventory Summary
+## File Inventory Summary
 
 ### **Active Python Files**: 10 files (all necessary)
 ### **Notebook Files**: 3 files (all active)
@@ -168,11 +168,11 @@ The current structure represents the **minimal viable codebase** with no redunda
 ### **Documentation**: docs/, CLAUDE.md, README.md
 ### **Archives**: Previously unused files properly archived
 
-## 🏁 Conclusion
+## Conclusion
 
-**Status**: ✅ **ANALYSIS COMPLETE**
-**Result**: 🎯 **NO REDUNDANT FILES FOUND**
-**Action**: 📚 **DOCUMENT CURRENT OPTIMAL STRUCTURE**
+**Status**: **ANALYSIS COMPLETE**
+**Result**: **NO REDUNDANT FILES FOUND**
+**Action**: **DOCUMENT CURRENT OPTIMAL STRUCTURE**
 
 The NHL Pool Optimization system already has a **minimal and efficient codebase** with no redundant files. All Python modules serve essential purposes either directly for notebooks or as supporting infrastructure.
 
