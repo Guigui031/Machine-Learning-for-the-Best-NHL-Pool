@@ -1,0 +1,23 @@
+NHL POOL OPTIMIZATION SUMMARY
+Season: 20242025
+Generated: 2025-09-22 18:02:05.009325
+
+==================================================
+OPTIMAL TEAM RESULTS:
+Total Players: 18
+Total PPG: 21.67
+Total Salary: $87,931,013
+Budget Utilization: 99.9%
+Position Distribution: {'A': 12, 'D': 4, 'G': 2}
+
+CONSTRAINTS USED:
+Salary Cap: $88,000,000
+Max Attackers: 12
+Max Defensemen: 6
+Max Goalies: 2
+
+PLAYER POOL:
+Total Players Considered: 105
+A: 56 players
+D: 32 players
+G: 17 players

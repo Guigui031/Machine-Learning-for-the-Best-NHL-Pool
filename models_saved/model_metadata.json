@@ -1,9 +1,9 @@
 {
   "best_model_name": "baseline_lasso",
   "performance_metrics": {
-    "rmse": 0.20944478737362993,
-    "r2": 0.7285838799769364,
-    "mae": 0.16170731253370413
+    "rmse": 0.2094448681915309,
+    "r2": 0.7285836705156687,
+    "mae": 0.1617073984533317
   },
   "feature_names": [
     "position",
@@ -95,5 +95,5 @@
   "target_mean": 0.685709843535073,
   "target_std": 0.43424366597428293,
   "model_type": "Lasso",
-  "timestamp": "2025-09-21T21:05:05.591056"
+  "timestamp": "2025-09-22T17:38:19.989656"
 }
