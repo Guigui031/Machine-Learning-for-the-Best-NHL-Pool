@@ -1,9 +1,9 @@
 {
   "best_model_name": "baseline_lasso",
   "performance_metrics": {
-    "rmse": 0.2094448681915309,
-    "r2": 0.7285836705156687,
-    "mae": 0.1617073984533317
+    "rmse": 0.21932252900301097,
+    "r2": 0.7262388123454795,
+    "mae": 0.16870334255035438
   },
   "feature_names": [
     "position",
@@ -90,10 +90,10 @@
     "pm_per_game_1",
     "pm_per_game_2"
   ],
-  "training_samples": 858,
-  "test_samples": 215,
-  "target_mean": 0.685709843535073,
-  "target_std": 0.43424366597428293,
+  "training_samples": 1309,
+  "test_samples": 328,
+  "target_mean": 0.6713348278088291,
+  "target_std": 0.42800775698615995,
   "model_type": "Lasso",
-  "timestamp": "2025-09-22T17:38:19.989656"
+  "timestamp": "2025-10-06T18:53:29.368584"
 }

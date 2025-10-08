@@ -4,109 +4,209 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a machine learning project for NHL pool optimization that predicts player performance and optimizes fantasy hockey team selection. The project uses historical NHL data to predict player points per game (PPG) and employs optimization algorithms to select the best possible team within salary constraints.
+This is a machine learning project for NHL pool optimization that predicts player performance and optimizes fantasy hockey team selection. The system uses historical NHL data to predict player points per game (PPG) and employs optimization algorithms to select the best possible team within salary and position constraints.
 
 ## Development Commands
 
 ### Environment Setup
 ```bash
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Running the Main Analysis
-The primary workflow is contained in the Jupyter notebook:
+### Main Workflows
+
+#### Complete ML Pipeline (Recommended)
 ```bash
-# Launch Jupyter notebook to run the main analysis
+jupyter notebook NHL_ML_Models_Complete.ipynb
+```
+- Full data collection, preprocessing, and feature engineering
+- Model training with multiple algorithms (baseline, advanced, ensemble)
+- Performance evaluation and model selection
+- Saves trained models to `models_saved/`
+
+#### Team Optimization
+```bash
+jupyter notebook Team_Optimization_Notebook.ipynb
+```
+- Loads pre-trained models for predictions
+- Applies Linear Programming optimization with constraints
+- Generates optimal team within $95.5M salary cap
+- Exports results to CSV files
+
+#### Original Analysis (Legacy)
+```bash
 jupyter notebook ML_for_NHL.ipynb
 ```
+- Historical analysis and exploratory data analysis
+- Algorithm comparison and development
 
 ### Testing Individual Components
 ```bash
-# Test data download functionality
+# Data pipeline (downloads and validates data)
+python data_pipeline.py
+
+# Data download from NHL API
 python data_download.py
 
-# Test player data processing
+# Data processing and normalization
 python process_data.py
 
-# Test ensemble learning models
-python ensemble_learning.py
+# Make predictions with trained models
+python model_predictor.py
 
-# Test optimization algorithms
+# Team optimization
 python pool_classifier.py
 ```
 
 ## Architecture Overview
 
-The project follows a modular architecture with clear separation of concerns:
+### Two-Tier Architecture
+The project has both **legacy modules** (root level) and a **modern modular structure** (`ml_models/`, `src/`):
 
-### Core Data Models
-- **`player.py`**: Defines `Player` and `Season` classes that encapsulate player statistics and biographical information
+#### Core Data Models (Root Level)
+- **`player.py`**: `Player` and `Season` classes
   - Player attributes: name, age, position, salary, height, weight, country
-  - Season-specific stats: goals, assists, games played, plus/minus, etc.
-  - Points calculation varies by position (Attackers: 2×goals + assists, Defensemen: 3×goals + assists, Goalies: 3×wins + 5×shutouts + 3×goals + assists)
+  - Season stats (comprehensive):
+    - **Common**: games_played, goals, assists, points, pim
+    - **Skaters** (A/D): shots, plus_minus, powerplay_goals/points, shorthanded_goals/points, game_winning_goals, overtime_goals, faceoff_percentage, shooting_percentage, time_on_ice_per_game, avg_shifts_per_game
+    - **Goalies** (G): games_started, wins, losses, ties, overtime_losses, shutouts, goals_against, goals_against_avg, shots_against, saves, save_percentage, time_on_ice (total)
+  - Role encoding: 'A' (Attacker), 'D' (Defenseman), 'G' (Goalie)
+  - Position-specific points: Attackers (2×G + A), Defensemen (3×G + A), Goalies (3×W + 5×SO + 3×G + A)
 
-- **`team.py`**: Simple `Team` class for team metadata (name, ID, season, points percentage)
+- **`team.py`**: Team metadata (name, ID, season, points percentage)
 
-### Data Pipeline
-- **`data_download.py`**: Handles NHL API data fetching
-  - Downloads player statistics, team rosters, season standings
-  - Uses NHL API endpoints (api-web.nhle.com)
-  - Implements caching to avoid redundant API calls
+- **`config.py`**: Centralized configuration using dataclasses
+  - `APIConfig`: NHL API settings (base URL, retries, timeout)
+  - `DataConfig`: Data paths and season settings
+  - `PoolConfig`: Optimization constraints (salary cap, position limits)
+  - `MLConfig`: ML hyperparameters (test size, CV folds, scoring)
 
-- **`process_data.py`**: Data processing and normalization
-  - Loads player data from JSON files
-  - Normalizes statistics by games played
-  - Handles data cleaning and feature engineering
-  - Creates training datasets with consecutive season pairs to predict third season
+#### Data Pipeline (Root Level)
+- **`data_download.py`**: NHL API integration
+  - Downloads player points, team rosters, season standings
+  - API: `https://api-web.nhle.com/v1`
+  - Implements caching to avoid redundant calls
 
-### Machine Learning Components
-- **`ensemble_learning.py`**: Implements ensemble regression models
-  - Supports XGBoost, LogisticRegression, SVR, SGD models
-  - Uses scikit-learn's VotingRegressor for ensemble predictions
-  - Includes hyperparameter tuning with RandomizedSearchCV
-  - Handles GPU memory management for XGBoost
+- **`data_pipeline.py`**: Comprehensive pipeline class `NHLDataPipeline`
+  - Orchestrates download, validation, and dataset creation
+  - Methods: `download_all_data()`, `get_all_players_for_seasons()`, `create_training_dataset()`, `prepare_current_season_data()`
+  - Integrates with data validation module
 
-### Optimization Engine
-- **`pool_classifier.py`**: Fantasy team optimization
-  - Implements both Linear Programming (PuLP) and Branch-and-Bound algorithms
-  - Constraints: salary budget (88M), position limits (12 attackers, 6 defensemen, 2 goalies)
-  - Objective: maximize total predicted points per game
+- **`process_data.py`**: Data processing utilities
+  - `load_player()`: Loads player with multi-season data
+  - `get_year_data_skaters()`: Extracts season-specific stats
+  - `process_data_skaters()`: Normalizes and engineers features
+  - Creates consecutive season pairs for training (seasons N-1, N → predict N+1)
 
-### Main Workflow (`ML_for_NHL.ipynb`)
-1. **Data Collection**: Extract player data for seasons 2020-2024
-2. **Data Cleaning**: Filter players with minimum 3 seasons and 100 total games
-3. **Feature Engineering**: Create training examples using consecutive season pairs
-4. **Model Training**: Train ensemble models to predict PPG for third season
-5. **Team Optimization**: Use trained models to predict current season and optimize team selection
+- **`data_validation.py`**: Data quality checks via `DataValidator` class
 
-## Data Structure
+#### Machine Learning (Modern Structure: `ml_models/`)
 
-The project expects data in the following structure:
+**Feature Engineering** (`ml_models/features/`):
+- **`feature_engineer.py`**: Main `FeatureEngineer` class
+  - `create_basic_features()`: PPG, shooting %, TOI per game, performance trends
+  - `create_advanced_features()`: Consistency metrics, role-specific features, age interactions
+  - `create_position_specific_features()`: Goals/assists ratios, plus/minus per game
+  - Handles scaling (StandardScaler/MinMaxScaler), label encoding, imputation
+  - `fit_transform()` for training, `transform()` for inference
+  - `save_components()` / `load_components()` for model persistence
+
+- **`hockey_features.py`**: Hockey-specific feature creation via `HockeyFeatures` class
+  - Performance metrics, efficiency stats, consistency measures
+  - `create_all_hockey_features()`: Applies full suite of hockey features
+
+**Model Training** (`ml_models/models/`):
+- **`model_factory.py`**: Factory pattern for creating models
+  - `create_baseline_model()`: LinearRegression, Ridge, RandomForest
+  - `create_advanced_model()`: XGBoost, SVR
+  - `create_ensemble_model()`: VotingRegressor with multiple estimators
+
+- **`baseline_models.py`**, **`advanced_models.py`**, **`ensemble_models.py`**: Model implementations
+
+**Model Evaluation** (`ml_models/evaluation/`):
+- **`model_evaluator.py`**: Performance evaluation (RMSE, R², MAE)
+- **`cross_validator.py`**: Cross-validation with hyperparameter tuning
+- **`metrics.py`**: Custom scoring functions
+
+#### Prediction and Optimization (Root Level)
+- **`model_predictor.py`**: Production prediction module
+  - `NHLModelPredictor` class loads saved models from `models_saved/`
+  - `load_model_artifacts()`: Loads model, feature engineer, metadata
+  - `predict()`: Generates PPG predictions with feature alignment
+  - Reconstructs `FeatureEngineer` from saved components
+
+- **`pool_classifier.py`**: Team optimization
+  - Linear Programming (PuLP) for optimal solution
+  - Branch-and-Bound algorithm (educational alternative)
+  - Constraints: salary cap ($95.5M default), position limits (12A/6D/2G)
+  - Objective: maximize total predicted PPG
+
+- **`ensemble_learning.py`**: Legacy ensemble training (still used in some notebooks)
+
+### Data Structure
+
 ```
 data/
-├── {season}/
-│   ├── {season}_players_points.json
-│   ├── {season}_standings.json
+├── {season}/                          # e.g., 20232024
+│   ├── {season}_players_points.json   # Top scorers
+│   ├── {season}_standings.json        # Team standings
 │   └── teams/
-│       └── {team_abbrev}.json
+│       └── {team_abbrev}.json         # Team rosters (e.g., TOR.json)
+
+models_saved/                          # Trained model artifacts
+├── best_nhl_model_{model_name}.joblib # Saved model
+├── model_metadata.json                # Performance metrics
+├── training_info.json                 # Training configuration
+└── feature_engineer_components.json   # Feature engineering state
 ```
 
-Where `{season}` follows format `YYYYYYY` (e.g., `20232024` for 2023-24 season).
+Season format: `YYYYYYY` (e.g., `20232024` for 2023-24 season)
+
+## Key Workflows
+
+### Training Pipeline
+1. **Data Collection**: `data_pipeline.py` downloads multi-season data via NHL API
+2. **Player Loading**: Create `Player` objects with `load_player()` from `process_data.py`
+3. **Dataset Creation**: Generate training examples with consecutive season pairs (seasons N-1, N → predict N+1)
+4. **Feature Engineering**: Apply `FeatureEngineer` to create hockey-specific features
+5. **Model Training**: Use `model_factory.py` to create and train ensemble models
+6. **Evaluation**: Assess performance with cross-validation (typical R² ~0.77)
+7. **Model Saving**: Persist model and feature engineer to `models_saved/`
+
+### Prediction and Optimization Pipeline
+1. **Load Model**: `NHLModelPredictor.load_model_artifacts()` from `models_saved/`
+2. **Prepare Data**: `prepare_current_season_data()` creates prediction dataset
+3. **Generate Predictions**: `predict()` produces PPG estimates for all players
+4. **Optimization**: `pool_classifier.py` or Team_Optimization_Notebook solves LP problem
+5. **Results**: Export optimal roster to CSV with salary and performance breakdowns
+
+## Configuration
+
+Key settings in `config.py`:
+- **Seasons**: Default training seasons 2020-2025, current season 2024-2025
+- **Salary Cap**: $95.5M (configurable via `PoolConfig.salary_cap`)
+- **Position Limits**: 12 Attackers, 6 Defensemen, 2 Goalies (configurable)
+- **API Settings**: 1s request delay, 3 retries, 30s timeout
+- **ML Settings**: 20% test split, 5-fold CV, random_state=42
+
+Can load from `config.json` or environment variables (e.g., `NHL_SALARY_CAP`)
 
 ## Key Dependencies
 
-- **beautifulsoup4**: Web scraping for salary data
-- **numpy, pandas**: Data manipulation and analysis  
-- **scikit-learn**: Machine learning models and utilities
+- **beautifulsoup4**: Salary data scraping
+- **numpy, pandas**: Data manipulation
+- **scikit-learn**: ML models, preprocessing, evaluation
 - **PuLP**: Linear programming optimization
-- **requests**: API data fetching
-- **xgboost**: Gradient boosting for ensemble models
+- **requests**: NHL API fetching
+- **xgboost**: Gradient boosting (optional but recommended)
+- **joblib**: Model serialization
 
 ## Development Notes
 
-- The project uses a 4-season sliding window for training (predicting season N+1 from seasons N-1 and N)
-- Player positions are encoded as roles: 'A' (Attacker), 'D' (Defenseman), 'G' (Goalie)
-- Salary data is scraped separately and defaults to 88M (maximum budget) for missing values
-- The optimization problem balances predicted performance against salary constraints
-- Both LP solver and custom Branch-and-Bound implementations are provided for comparison
+- **Feature Alignment**: During prediction, `FeatureEngineer.transform()` aligns features to match training (fills missing with 0)
+- **Label Encoders**: Categorical variables (age_group, career_stage, role) are label-encoded and persisted
+- **Imputation**: Missing values filled with median strategy, saved with feature engineer
+- **Model Persistence**: Models saved as `.joblib`, feature engineer as JSON components
+- **Optimization**: LP solver guarantees optimal solution in <1 second; Branch-and-Bound provided for educational purposes
+- **Performance**: Best models achieve R² ~0.768 for PPG prediction
+- **Data Quality**: `DataValidator` checks for missing values, outliers, and feature quality

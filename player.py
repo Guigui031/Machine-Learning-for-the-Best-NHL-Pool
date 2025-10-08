@@ -73,15 +73,41 @@ class Season:
     def __init__(self, season_id):
         self.season_id = season_id
         self.team = None
+
+        # Common stats (skaters and goalies)
         self.n_games_played = None
-        self.n_assists = None
-        self.n_wins = None
-        self.n_shutouts = None
         self.n_goals = None
+        self.n_assists = None
+        self.n_points = None
         self.n_pim = None
+
+        # Skater-specific stats
         self.n_shots = None
-        self.n_plusMinus = None
-        self.n_time = None
+        self.n_plus_minus = None
+        self.n_time_on_ice_per_game = None
+        self.n_powerplay_goals = None
+        self.n_powerplay_points = None
+        self.n_shorthanded_goals = None
+        self.n_shorthanded_points = None
+        self.n_game_winning_goals = None
+        self.n_overtime_goals = None
+        self.n_faceoff_percentage = None
+        self.n_shooting_percentage = None
+        self.n_avg_shifts_per_game = None
+
+        # Goalie-specific stats
+        self.n_games_started = None
+        self.n_wins = None
+        self.n_losses = None
+        self.n_ties = None
+        self.n_overtime_losses = None
+        self.n_shutouts = None
+        self.n_goals_against = None
+        self.n_goals_against_avg = None
+        self.n_shots_against = None
+        self.n_saves = None
+        self.n_save_percentage = None
+        self.n_time_on_ice = None  # Total TOI for goalies
 
     def set_team(self, team):
         self.team = team
@@ -99,20 +125,82 @@ class Season:
     def set_n_shots(self, n_shots):
         self.n_shots = n_shots
 
-    def set_n_time(self, n_time):
-        self.n_time = n_time
+    def set_n_points(self, n_points):
+        self.n_points = n_points
 
-    def set_n_plusMinus(self, n_plusMinus):
-        self.n_plusMinus = n_plusMinus
+    def set_n_games_played(self, n_games_played):
+        self.n_games_played = n_games_played
+
+    # Skater setters
+    def set_n_plus_minus(self, n_plus_minus):
+        self.n_plus_minus = n_plus_minus
+
+    def set_n_time_on_ice_per_game(self, n_time_on_ice_per_game):
+        self.n_time_on_ice_per_game = n_time_on_ice_per_game
+
+    def set_n_powerplay_goals(self, n_powerplay_goals):
+        self.n_powerplay_goals = n_powerplay_goals
+
+    def set_n_powerplay_points(self, n_powerplay_points):
+        self.n_powerplay_points = n_powerplay_points
+
+    def set_n_shorthanded_goals(self, n_shorthanded_goals):
+        self.n_shorthanded_goals = n_shorthanded_goals
+
+    def set_n_shorthanded_points(self, n_shorthanded_points):
+        self.n_shorthanded_points = n_shorthanded_points
+
+    def set_n_game_winning_goals(self, n_game_winning_goals):
+        self.n_game_winning_goals = n_game_winning_goals
+
+    def set_n_overtime_goals(self, n_overtime_goals):
+        self.n_overtime_goals = n_overtime_goals
+
+    def set_n_faceoff_percentage(self, n_faceoff_percentage):
+        self.n_faceoff_percentage = n_faceoff_percentage
+
+    def set_n_shooting_percentage(self, n_shooting_percentage):
+        self.n_shooting_percentage = n_shooting_percentage
+
+    def set_n_avg_shifts_per_game(self, n_avg_shifts_per_game):
+        self.n_avg_shifts_per_game = n_avg_shifts_per_game
+
+    # Goalie setters
+    def set_n_games_started(self, n_games_started):
+        self.n_games_started = n_games_started
 
     def set_n_wins(self, n_wins):
         self.n_wins = n_wins
 
+    def set_n_losses(self, n_losses):
+        self.n_losses = n_losses
+
+    def set_n_ties(self, n_ties):
+        self.n_ties = n_ties
+
+    def set_n_overtime_losses(self, n_overtime_losses):
+        self.n_overtime_losses = n_overtime_losses
+
     def set_n_shutouts(self, n_shutouts):
         self.n_shutouts = n_shutouts
-    
-    def set_n_games_played(self, n_games_played):
-        self.n_games_played = n_games_played
+
+    def set_n_goals_against(self, n_goals_against):
+        self.n_goals_against = n_goals_against
+
+    def set_n_goals_against_avg(self, n_goals_against_avg):
+        self.n_goals_against_avg = n_goals_against_avg
+
+    def set_n_shots_against(self, n_shots_against):
+        self.n_shots_against = n_shots_against
+
+    def set_n_saves(self, n_saves):
+        self.n_saves = n_saves
+
+    def set_n_save_percentage(self, n_save_percentage):
+        self.n_save_percentage = n_save_percentage
+
+    def set_n_time_on_ice(self, n_time_on_ice):
+        self.n_time_on_ice = n_time_on_ice
 
     def get_marqueur_points(self, role):
         if role == "A":

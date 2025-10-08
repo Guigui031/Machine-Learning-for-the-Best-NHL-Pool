@@ -113,9 +113,9 @@
     "pm_per_game_1",
     "pm_per_game_2"
   ],
-  "target_mean": 0.685709843535073,
-  "target_std": 0.43424366597428293,
-  "training_samples": 858,
-  "test_samples": 215,
-  "data_creation_timestamp": "2025-09-22T17:38:19.756784"
+  "target_mean": 0.6713348278088291,
+  "target_std": 0.42800775698615995,
+  "training_samples": 1309,
+  "test_samples": 328,
+  "data_creation_timestamp": "2025-10-06T18:53:29.118224"
 }

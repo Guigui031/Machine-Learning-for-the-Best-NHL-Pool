@@ -154,7 +154,7 @@ def get_all_player_ids(season: str, team: str) -> List[str]:
         if not is_valid:
             logger.warning(f"Team {team} data validation issues: {errors}")
 
-        # Extract unique player IDs
+        # Extract unique player IDs (both skaters and goalies)
         ids = []
         if 'skaters' in data:
             for player in data['skaters']:
@@ -163,7 +163,14 @@ def get_all_player_ids(season: str, team: str) -> List[str]:
                     if player_id not in ids:
                         ids.append(player_id)
 
-        logger.info(f"Found {len(ids)} players for team {team} in season {season}")
+        if 'goalies' in data:
+            for player in data['goalies']:
+                if 'playerId' in player:
+                    player_id = str(player['playerId'])
+                    if player_id not in ids:
+                        ids.append(player_id)
+
+        logger.info(f"Found {len(ids)} players (skaters + goalies) for team {team} in season {season}")
         return ids
 
     except json.JSONDecodeError as e:
@@ -251,7 +258,7 @@ def process_data_skaters(df: pd.DataFrame) -> pd.DataFrame:
     # Normalize games played by season length (82 games)
     for games_col in ['games_1', 'games_2']:
         if games_col in df_processed.columns:
-            df_processed[games_col] = df_processed[games_col] / 82
+            df_processed[games_col] = df_processed[games_col] / 82  # TODO: adjust for shortened seasons
 
     # Validate processed data
     numeric_columns = df_processed.select_dtypes(include=[np.number]).columns
@@ -529,15 +536,67 @@ def load_player(player_id: str, seasons: List[str], season: str = None) -> Optio
                             logger.warning(f"Season {target_season} stats validation issues for player {player_id}: {errors}")
 
                         pl_class.set_season_points(target_season)
+                        season_obj = pl_class.seasons[target_season]
 
-                        # Set stats with default values for missing data
-                        pl_class.seasons[target_season].set_n_goals(stats.get('goals', 0))
-                        pl_class.seasons[target_season].set_n_assists(stats.get('assists', 0))
-                        pl_class.seasons[target_season].set_n_pim(stats.get('pim', 0))
-                        pl_class.seasons[target_season].set_n_games_played(stats.get('gamesPlayed', 0))
-                        pl_class.seasons[target_season].set_n_shots(stats.get('shots', 0))
-                        pl_class.seasons[target_season].set_n_time(stats.get('avgToi', '0:00'))
-                        pl_class.seasons[target_season].set_n_plusMinus(stats.get('plusMinus', 0))
+                        # Common stats (all players)
+                        season_obj.set_n_goals(stats.get('goals', 0))
+                        season_obj.set_n_assists(stats.get('assists', 0))
+                        season_obj.set_n_points(stats.get('points', 0))
+                        season_obj.set_n_pim(stats.get('pim', 0))
+                        season_obj.set_n_games_played(stats.get('gamesPlayed', 0))
+
+                        # Skater-specific stats
+                        if pl_class.role in ['A', 'D']:
+                            season_obj.set_n_shots(stats.get('shots', 0))
+                            season_obj.set_n_plus_minus(stats.get('plusMinus', 0))
+                            season_obj.set_n_powerplay_goals(stats.get('powerPlayGoals', 0))
+                            season_obj.set_n_powerplay_points(stats.get('powerPlayPoints', 0))
+                            season_obj.set_n_shorthanded_goals(stats.get('shorthandedGoals', 0))
+                            season_obj.set_n_shorthanded_points(stats.get('shorthandedPoints', 0))
+                            season_obj.set_n_game_winning_goals(stats.get('gameWinningGoals', 0))
+                            season_obj.set_n_overtime_goals(stats.get('otGoals', 0))
+                            season_obj.set_n_faceoff_percentage(stats.get('faceoffWinningPctg', 0.0))
+                            season_obj.set_n_shooting_percentage(stats.get('shootingPctg', 0.0))
+
+                            # Parse time on ice per game (format: "MM:SS" to seconds)
+                            avg_toi = stats.get('avgToi', '0:00')
+                            if isinstance(avg_toi, str) and ':' in avg_toi:
+                                try:
+                                    parts = avg_toi.split(':')
+                                    toi_seconds = int(parts[0]) * 60 + int(parts[1])
+                                    season_obj.set_n_time_on_ice_per_game(toi_seconds)
+                                except:
+                                    season_obj.set_n_time_on_ice_per_game(0)
+                            else:
+                                season_obj.set_n_time_on_ice_per_game(0)
+
+                            season_obj.set_n_avg_shifts_per_game(stats.get('avgShiftsPerGame', 0.0))
+
+                        # Goalie-specific stats
+                        elif pl_class.role == 'G':
+                            season_obj.set_n_games_started(stats.get('gamesStarted', 0))
+                            season_obj.set_n_wins(stats.get('wins', 0))
+                            season_obj.set_n_losses(stats.get('losses', 0))
+                            season_obj.set_n_ties(stats.get('ties', 0))
+                            season_obj.set_n_overtime_losses(stats.get('otLosses', 0))
+                            season_obj.set_n_shutouts(stats.get('shutouts', 0))
+                            season_obj.set_n_goals_against(stats.get('goalsAgainst', 0))
+                            season_obj.set_n_goals_against_avg(stats.get('goalsAgainstAvg', 0.0))
+                            season_obj.set_n_shots_against(stats.get('shotsAgainst', 0))
+                            season_obj.set_n_saves(stats.get('saves', 0))
+                            season_obj.set_n_save_percentage(stats.get('savePctg', 0.0))
+
+                            # Total time on ice in seconds
+                            toi = stats.get('timeOnIce', 0)
+                            if isinstance(toi, str) and ':' in toi:
+                                try:
+                                    parts = toi.split(':')
+                                    toi_seconds = int(parts[0]) * 60 + int(parts[1])
+                                    season_obj.set_n_time_on_ice(toi_seconds)
+                                except:
+                                    season_obj.set_n_time_on_ice(0)
+                            else:
+                                season_obj.set_n_time_on_ice(toi if isinstance(toi, int) else 0)
 
                         # Handle team name
                         team_name = 'Unknown'

@@ -30,14 +30,14 @@ class APIConfig:
 class DataConfig:
     """Configuration for data paths and settings."""
     base_data_dir: str = "data"
-    current_season: str = "20232024"
+    current_season: str = "20252026"
     training_seasons: List[str] = None
     salary_file_name: str = "players_salary.tsv"
-    default_salary: int = 88000000
+    default_salary: int = None
 
     def __post_init__(self):
         if self.training_seasons is None:
-            self.training_seasons = ["20202021", "20212022", "20222023", "20232024"]
+            self.training_seasons = [f"{year}{year+1}" for year in range(2000, 2026)]
 
     @property
     def data_path(self) -> Path:
@@ -72,12 +72,12 @@ class DataConfig:
 @dataclass
 class PoolConfig:
     """Configuration for pool optimization settings."""
-    salary_cap: int = 88000000
+    salary_cap: int = 95000000
     max_attackers: int = 12
     max_defensemen: int = 6
     max_goalies: int = 2
-    min_games_threshold: int = 100
-    min_seasons_threshold: int = 3
+    min_games_threshold: int = 60
+    min_seasons_threshold: int = 1
 
     @property
     def total_players(self) -> int:
